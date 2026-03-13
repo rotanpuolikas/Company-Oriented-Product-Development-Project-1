@@ -20,3 +20,17 @@ nettisivu atm `vite@latest (8.0.0)`
 AINA EKANA: `npm i`
 
 nettisivu käyntiin: `npm run dev`
+
+
+
+## credits where credits are due, aka nimien selvennykset
+
+rotanpuolikas - Tuukka Alatalo
+
+MozkuHarazoo - Niko Sietiö
+
+jennaheii - Jenna Heinonen
+
+jjulle - Julia Vaali
+
+tatterzoni - Tatu Kulin
