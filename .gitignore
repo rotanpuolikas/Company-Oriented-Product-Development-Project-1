@@ -1,6 +1,10 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 
+# secrets
+mobileBudgeting/firebase-auth.js
+webapp/firebase-auth.js
+
 # --------------------- #
 # mobile app .gitignore #
 # --------------------- #
