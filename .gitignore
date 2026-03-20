@@ -2,9 +2,7 @@
 
 
 # secrets
-mobileBudgeting/firebase-auth.js
-webapp/firebase-auth.js
-
+firebase-auth.js
 # --------------------- #
 # mobile app .gitignore #
 # --------------------- #
