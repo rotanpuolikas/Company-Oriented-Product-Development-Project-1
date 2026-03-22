@@ -27,7 +27,7 @@ const Login = () => {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.loginContainer} keyboardVerticalOffset={null} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView style={styles.loginContainer} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={styles.title}>Welcome Back</Text>
