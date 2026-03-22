@@ -6,7 +6,7 @@ tällä hetkellä vaan templatena
 
 ## Mobiiliappis
 
-mobiiliappis atm `expo@latest (55.0.16)`
+mobiiliappis atm `expo@54.0.33`, koska iOS :))
 
 AINA EKANA: `npm i`
 
