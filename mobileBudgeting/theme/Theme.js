@@ -1,4 +1,4 @@
-import { colours } from "./colours.js"
+import { colours } from "./Colours.js"
 
 import { StyleSheet } from "react-native"
 

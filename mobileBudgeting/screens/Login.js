@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext"
 import { styles } from "../theme/Theme.js"
 import { colours } from "../theme/Colours.js"
 
-const LoginScreen = () => {
+const Login = () => {
   const { login } = useContext(AuthContext)
   
   const [email, setEmail] = useState("")
@@ -66,4 +66,4 @@ const LoginScreen = () => {
   )
 }
 
-export default LoginScreen
+export default Login
