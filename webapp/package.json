@@ -10,8 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-navigation/bottom-tabs": "^7.15.6",
-    "@react-navigation/native-stack": "^7.14.6",
     "firebase": "^12.11.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
