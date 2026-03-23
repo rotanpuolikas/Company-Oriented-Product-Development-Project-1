@@ -49,6 +49,7 @@ const Login = () => {
             onChangeText={setPassword}
             secureTextEntry
             style={styles.input}
+            onSubmitEditing={handleLogin} // enter nii pääset sisälle matrixiin
           />
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
