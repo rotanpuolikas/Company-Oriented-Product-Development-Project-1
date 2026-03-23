@@ -11,4 +11,6 @@ export const colours = {
   ratingStars: "#FFC40C",
   borderColour: "#A8DADC",
   imgBorder: "#1D3557",
-};
+  income: "#88CC88",
+  expense: "#CC8888",
+}
