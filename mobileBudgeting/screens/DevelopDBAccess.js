@@ -12,7 +12,7 @@ const DevelopDBAccess = () => {
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [rawAmount, setRawAmount] = useState("")
-  const [ieState, setIEState] = useState("")
+  const [ieState, setIEState] = useState(false)
 
   function parseMoneyInput(raw) { // we save the inputted amounts x 100, ignoring every decimal after the second. javascript does funky stuff with floats sometimes so better to avoid using them
   if (!raw) return 0;
@@ -59,15 +59,16 @@ const DevelopDBAccess = () => {
         createdAt: serverTimestamp(),
       })
 
-      Alert.alert("Success", "Income source added!");
+      Alert.alert("Success", "Income source added!")
 
-      setName("");
-      setDescription("");
-      setAmount("");
+      setName("")
+      setDescription("")
+      setAmount("")
+      setRawAmount("")
 
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Could not save income");
+      console.log(error)
+      Alert.alert("Error", "Could not save income")
     }
   }
   const handleAddExpense = async () => {
@@ -98,20 +99,21 @@ const DevelopDBAccess = () => {
         createdAt: serverTimestamp(),
       })
 
-      Alert.alert("Success", "Expense added!");
+      Alert.alert("Success", "Expense added!")
 
-      setName("");
-      setDescription("");
-      setAmount("");
+      setName("")
+      setDescription("")
+      setAmount("")
+      setRawAmount("")
 
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Could not save expense");
+      console.log(error)
+      Alert.alert("Error", "Could not save expense")
     }
   }
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={() => {setIEState(!ieState)}}>
+      <TouchableOpacity style={styles.devButton} onPress={() => {setIEState(!ieState)}}>
         <Text style={styles.buttonText}>Change to {ieState ? "expense" : "income"}</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Add New {ieState ? "Income" : "Expense"}</Text>
