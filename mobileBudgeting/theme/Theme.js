@@ -100,6 +100,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+    devButton: {
+    backgroundColor: colours.primary,
+    padding: 15,
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: 20,
+  },
   addButtonText: {
     color: colours.whiteText,
     fontSize: 16,
