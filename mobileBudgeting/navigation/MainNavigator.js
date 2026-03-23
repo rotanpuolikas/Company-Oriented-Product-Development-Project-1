@@ -10,6 +10,7 @@ import { AuthContext } from "../context/AuthContext"
 
 import Etusivu from "../screens/Etusivu"
 import DevelopDBAccess from "../screens/DevelopDBAccess"
+import DevelopDBRead from "../screens/DevelopDBRead"
 
 const Tab = createBottomTabNavigator()
 
@@ -33,9 +34,13 @@ const MainNavigator = () => {
         <Ionicons name="home-outline" size={size} color={color}/> // this is UGLY and horribly convoluted but eh it works
       }} />
       
-      <Tab.Screen name="Dev screen" component={DevelopDBAccess} options={{tabBarIcon: ({color, size }) =>
+      <Tab.Screen name="Dev db add" component={DevelopDBAccess} options={{tabBarIcon: ({color, size }) =>
         <Ionicons name="add-outline" size={size} color={color}/>
-      }} />      
+      }} />
+
+      <Tab.Screen name="Dev db list" component={DevelopDBRead} options={{tabBarIcon: ({color, size }) =>
+        <Ionicons name="archive-outline" size={size} color={color}/>
+      }} />
     </Tab.Navigator>
   )
 }
