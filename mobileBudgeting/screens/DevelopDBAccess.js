@@ -5,7 +5,7 @@ import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
 import { styles } from '../theme/Theme.js'
 
-const AddLocationScreen = () => {
+const DevelopDBAccess = () => {
   const { user } = useContext(AuthContext)
 
   const [name, setName] = useState("")
@@ -151,4 +151,4 @@ const AddLocationScreen = () => {
   )
 }
 
-export default AddLocationScreen
+export default DevelopDBAccess
