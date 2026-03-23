@@ -9,6 +9,7 @@ import { colours } from "../theme/Colours.js"
 import { AuthContext } from "../context/AuthContext"
 
 import Etusivu from "../screens/Etusivu"
+import DevelopDBAccess from "../screens/DevelopDBAccess"
 
 const Tab = createBottomTabNavigator()
 
@@ -19,7 +20,7 @@ const MainNavigator = () => {
   const { logout, user } = useContext(AuthContext)
   
   return (
-    <Tab.Navigator // this looks terrible but i found this to look the best
+    <Tab.Navigator // this looks terrible but i found this to look the best (in-app)
       screenOptions={{
         headerRight: () => (
           <TouchableOpacity onPress={logout} style={{ marginRight: 15 }}>
@@ -28,22 +29,13 @@ const MainNavigator = () => {
             </Text>
           </TouchableOpacity>), headerTitle: `Welcome ${user?.email}`,}}> 
         
-      <Tab.Screen name="Locations" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="list-outline" size={size} color={color}/> // this is UGLY and horribly convoluted but eh it works
+      <Tab.Screen name="Etusivu" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
+        <Ionicons name="home-outline" size={size} color={color}/> // this is UGLY and horribly convoluted but eh it works
       }} />
       
-      <Tab.Screen name="Add Location" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
+      <Tab.Screen name="Dev screen" component={DevelopDBAccess} options={{tabBarIcon: ({color, size }) =>
         <Ionicons name="add-outline" size={size} color={color}/>
-      }} />
-      
-      <Tab.Screen name="Map" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="navigate-circle-outline" size={size} color={color}/>
-      }} />
-      
-      <Tab.Screen name="Countries" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="earth-outline" size={size} color={color}/>
-      }} />
-      
+      }} />      
     </Tab.Navigator>
   )
 }
