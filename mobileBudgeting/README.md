@@ -18,6 +18,12 @@ Elä koske, tekee just mitä sen pitää, eli lataa vaan perus navigaation, kaik
 
 `Etusivu.js` on etusivu... tällä hetkellä tyhjää täynnä.
 
+Seuraavat kaksi asiaa on vain testaukseen ja devaukseen tarkotettuja sivuja, ei tule olemaan lopputuotteessa.
+
+`DevelopDBAccess.js` on sivu, jossa pystyy lisäilemään tulojen ja menojen lähteitä käyttäjälle
+
+`DevelopDBRead.js` on sivu, jossa voi selata ja poistaa käyttäjän tietokannassa olevia tietoja.
+
 ### context
 
 `AuthContext.js` hoitaa autentikoinnin, älä koske. Tämä toimii. Jos päätetään käyttää laitteen paikallista storagea, tai lisätä käyttäjälle loginissa tärkeitä parametrejä niin sitten ne lisätään tänne. Muutoin tämä on fine-as-is.
