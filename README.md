@@ -1,5 +1,13 @@
 # web + mobile app test
 
+## ALUKSI
+
+aina `git pull` ja `npm i` ennen ku mitään muutoksia tekemään
+
+käynnistä appi: `npx expo start --web`, näyttää kaks erroria versioista, mutta jos nuo packaget päivittää noihin 'oikeisiin' versioihin, tää lopettaa toimimisen, joten ne voi ignoraa.
+
+## infoa
+
 toteutettu käyttäen Expoa, `expo@54.0.33` to be exact, koska iOS :))
 
 as it turns out expolla voi tehä molemmat, mobiili- ja webapin.
