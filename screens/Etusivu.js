@@ -1,6 +1,6 @@
 import {styles} from "../theme/Theme.js"
 import {colours} from "../theme/Colours.js"
-import { View, ActivityIndicator} from "react-native"
+import { View, ActivityIndicator, TouchableOpacity} from "react-native"
 import React, {useState, useContext } from "react"
 import { db } from "../firebase-auth"
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
@@ -8,7 +8,7 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 import { PieChart } from "react-native-gifted-charts"
 import { AuthContext } from "../context/AuthContext"
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"
-
+import AddExpensePopup from './AddExpensePopup.js'
 
 const Etusivu = () => {
   const { user } = useContext(AuthContext)
@@ -16,11 +16,17 @@ const Etusivu = () => {
 
   const [loading, setLoading] = useState(true)
   const [pieData, setPieData] = useState([])
+
+  const [showPopup, setShowPopup] = useState(false)
   
   const fetchData = async () => {
   try {
+    
+    const today = new Date()
+    const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
+    
     const userRefIncome = collection(db, "users", user.uid, "userIncomes")
-    const userRefExpense = collection(db, "users", user.uid, "userExpenses")
+    const userRefExpense = collection(db, "users", user.uid, `${formatDay}_expenses`)
     const snapshotIncome = await getDocs(userRefIncome)
     const snapshotExpense = await getDocs(userRefExpense)
     const dataIncome = snapshotIncome.docs.map((doc) => ({
@@ -66,17 +72,21 @@ const Etusivu = () => {
 
   
   return(
-    <View>
-      <PieChart
-        style={styles.piechart}
-        data={pieData}
-        donut
-        innerRadius={60}
-        showText
-        textColor="black"
-        textSize={12}
-        focusOnPress
-      />
+    <View style={styles.etusivu}>
+      <View style={styles.hCenter}>
+        <PieChart
+          data={pieData}
+          textColor="black"
+          textSize={12}
+          focusOnPress
+        />
+      </View>
+
+      <TouchableOpacity style={styles.buttonFrontpage} onPress={() => setShowPopup(true)}>
+        <Ionicons name="add-outline" size={30} color={'#000'}/>
+      </TouchableOpacity>
+      
+      <AddExpensePopup visible={showPopup} onClose={() => setShowPopup(false)} />
     </View>
   )
 }
