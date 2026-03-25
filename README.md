@@ -1,36 +1,39 @@
-# Company oriented product development kurssi
+# mobile app structure
 
-Tämä on tällain hassusti nytten että tässä on kaks kansiota yhdessä repossa, kaks projektia yhdessä siis. Molemmat ideaalisti juttelis keskinään, molemmilla omat dependancyt yms.
+mobiiliappis toimii näin:
 
-tällä hetkellä vaan templatena
+### App.js
 
-## Mobiiliappis
+Elä koske, tekee just mitä sen pitää, eli lataa vaan perus navigaation, kaikki eri screenit ja muut tapahtuu `./navigation/MainNavigator.js` ja `./navigation/AuthNavigator.js` -tiedostoissa.
 
-mobiiliappis atm `expo@54.0.33`, koska iOS :))
+### /navigation
 
-AINA EKANA: `npm i`
+`MainNavigator.js` hoitaa sovelluksen peruskäytön, se lataa alanavigaatiopalkin, ja sitä kautta jokaisen eri näytön kansiosta `screens/`
 
-Mobiiliappis käyntiin: `npx expo start`
+`AuthNavigator.js` on perus login näyttö / sen latausnäyttö. Tämä lataa tiedoston `screens/Login.js`, joka sisältää login-näytön, usko tai älä.
 
+### /screens
 
-## webapp nettisivu
+`Login.js` on perus login näyttö
 
-nettisivu atm `vite@latest (8.0.0)`
+`Etusivu.js` on etusivu... tällä hetkellä tyhjää täynnä.
 
-AINA EKANA: `npm i`
+Seuraavat kaksi asiaa on vain testaukseen ja devaukseen tarkotettuja sivuja, ei tule olemaan lopputuotteessa.
 
-nettisivu käyntiin: `npm run dev`
+`DevelopDBAccess.js` on sivu, jossa pystyy lisäilemään tulojen ja menojen lähteitä käyttäjälle
 
+`DevelopDBRead.js` on sivu, jossa voi selata ja poistaa käyttäjän tietokannassa olevia tietoja.
 
+### context
 
-## credits where credits are due, aka nimien selvennykset
+`AuthContext.js` hoitaa autentikoinnin, älä koske. Tämä toimii. Jos päätetään käyttää laitteen paikallista storagea, tai lisätä käyttäjälle loginissa tärkeitä parametrejä niin sitten ne lisätään tänne. Muutoin tämä on fine-as-is.
 
-rotanpuolikas - Tuukka Alatalo
+### theme
 
-MozkuHarazoo - Niko Sietiö
+`Theme.js` on yleinen teematiedosto, sisältää yhden stylesheetin jossa on jokainen mahdollinen asia sisällä, paitsi värit.
 
-jennaheii - Jenna Heinonen
+`Colours.js` on yleinen väritiedosto, todella moni asia referoi tähän, ja täällä on siis sovelluksen kaikki värit.
 
-jjulle - Julia Vaali
+### assets
 
-tatterzoni - Tatu Kulin
+Tämä kansio sisältää kaiken median applikaatiolle. Tänne appiksen logo sun muut sellaiset graffat kunhan niitä tullee tehdyksi.
