@@ -23,9 +23,11 @@ const MainNavigator = () => {
   return (
     <Tab.Navigator // this looks terrible but i found this to look the best (in-app)
       screenOptions={{
+          tabBarActiveTintColor: colours.secondary,
+          tabBarInactiveTintColor: 'gray',
         headerRight: () => (
           <TouchableOpacity onPress={logout} style={{ marginRight: 15 }}>
-            <Text style={{ color: colours.primary, fontWeight: "600" }}>
+            <Text style={{ color: colours.linkText, fontWeight: "600" }}>
               Logout
             </Text>
           </TouchableOpacity>), headerTitle: `Welcome ${user?.email}`,}}> 

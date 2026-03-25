@@ -28,11 +28,14 @@ const DevelopDBRead = () => {
         user.uid,
         "userIncomes"
       )
+      
+      const today = new Date()
+      const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
       const userRefExpense = collection(
         db,
         "users",
         user.uid,
-        "userExpenses"
+        `${formatDay}_expenses`
       )
 
       const snapshotIncome = await getDocs(userRefIncome)

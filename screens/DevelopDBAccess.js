@@ -84,19 +84,22 @@ const DevelopDBAccess = () => {
       return
     }
 
+    const today = new Date()
+    const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
+    
     try {
       const userRef = collection(
         db,
         "users",
         user.uid,
-        "userExpenses"
+        `${formatDay}_expenses`
       )
 
       await addDoc(userRef, {
         name,
         description,
         amount: amount,
-        createdAt: serverTimestamp(),
+        createdAt: new Date(),
       })
 
       Alert.alert("Success", "Expense added!")
