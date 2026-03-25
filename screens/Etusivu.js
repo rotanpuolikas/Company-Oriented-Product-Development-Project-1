@@ -86,7 +86,7 @@ const Etusivu = () => {
         <Ionicons name="add-outline" size={30} color={'#000'}/>
       </TouchableOpacity>
       
-      <AddExpensePopup visible={showPopup} onClose={() => setShowPopup(false)} />
+      <AddExpensePopup visible={showPopup} onClose={(added) => {setShowPopup(false); if(added){fetchData()}}} />
     </View>
   )
 }
