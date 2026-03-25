@@ -1,11 +1,13 @@
 export const colours = {
-  primary: "#00A2FF",        // nice blue
-  secondary: "#145DA0",      // dark blue
+  primary: "#A3FFAC",        // nice green
+  secondary: "#00D115",      // dark green
   accent: "#FFAE32",         // soft orange
-  background: "#CCECFF",     // light blue
+  background: "#E6FFE8",     // light blue
   card: "#FFFFFF",           // just straight up white
   whiteText: "#FFFFFF",
-  textPrimary: "#1D3557",
+  blackText: '#000000',
+  linkText: "#00A2FF",
+  textPrimary: "#00A310",
   textSecondary: "#457B9D",
   error: "#E63946",
   ratingStars: "#FFC40C",

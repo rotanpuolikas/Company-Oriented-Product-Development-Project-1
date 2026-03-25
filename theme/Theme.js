@@ -3,9 +3,46 @@ import { colours } from "./Colours.js"
 import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
-  piechart: {
-    margin: "auto",
-    alignSelf: "center",
+  etusivu: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  hCenter: {
+    flex: 1,
+    alignItems: "center",
+  },
+  vCenter: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  buttonFrontpage: {
+    backgroundColor: colours.primary,
+    padding: 15,
+    borderRadius: 50,
+    width: '35%',
+    alignSelf: 'center',
+    bottom: 30,
+    height: '10%',
+    alignItems: "center",
+    justifyContent: 'center',
+  },
+
+  popup: {
+    backgroundColor: colours.background,
+    borderRadius: 12,
+    padding: 24,
+    width: '80%',
+  },
+  popupOverlay: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    flex: 1,
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loginContainer: {
     flex: 1,
@@ -39,7 +76,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: colours.whiteText,
+    color: colours.blackText,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -74,7 +111,7 @@ export const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: "bold",
-    color: colours.textPrimary,
+    color: colours.blackText,
     marginBottom: 5,
   },
   description: {
@@ -112,7 +149,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addButtonText: {
-    color: colours.whiteText,
+    color: colours.blackText,
     fontSize: 16,
     fontWeight: "600",
   },
