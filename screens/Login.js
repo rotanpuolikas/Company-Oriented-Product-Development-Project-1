@@ -28,7 +28,7 @@ const Login = () => {
 
   return (
     <KeyboardAvoidingView style={styles.loginContainer} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={Platform.OS === 'web' ? () => {} : Keyboard.dismiss}>
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={styles.title}>Welcome Back</Text>
 
@@ -49,6 +49,7 @@ const Login = () => {
             onChangeText={setPassword}
             secureTextEntry
             style={styles.input}
+            onSubmitEditing={handleLogin} // enter nii pääset sisälle matrixiin
           />
 
           {error ? <Text style={styles.error}>{error}</Text> : null}

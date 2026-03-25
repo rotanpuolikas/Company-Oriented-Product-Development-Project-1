@@ -3,6 +3,10 @@ import { colours } from "./Colours.js"
 import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
+  piechart: {
+    margin: "auto",
+    alignSelf: "center",
+  },
   loginContainer: {
     flex: 1,
     backgroundColor: colours.background,
