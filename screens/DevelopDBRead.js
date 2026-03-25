@@ -83,11 +83,13 @@ const DevelopDBRead = () => {
   }
   const handleRemoveExpense = async (expenseId) => {
     try{
+      const today = new Date()
+      const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
       const locationRef = doc(
         db,
         "users",
         user.uid,
-        "userExpenses",
+        `${formatDay}_expenses`,
         expenseId
       )
 
