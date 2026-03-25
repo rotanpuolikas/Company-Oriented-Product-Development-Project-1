@@ -23,6 +23,9 @@ const MainNavigator = () => {
   return (
     <Tab.Navigator // this looks terrible but i found this to look the best (in-app)
       screenOptions={{
+          tabBarStyle: {
+            backgroundColor: colours.primary
+          },
           tabBarActiveTintColor: colours.secondary,
           tabBarInactiveTintColor: 'gray',
         headerRight: () => (
