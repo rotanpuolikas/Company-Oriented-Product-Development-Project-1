@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonFrontpage: {
-    backgroundColor: colours.primary,
+    backgroundColor: colours.button,
     padding: 15,
     borderRadius: 50,
     width: '35%',
@@ -63,6 +63,7 @@ export const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: colours.card,
+    color: colours.blackText,
     padding: 14,
     borderRadius: 12,
     marginBottom: 15,
@@ -70,7 +71,7 @@ export const styles = StyleSheet.create({
     borderColor: colours.borderColour,
   },
   button: {
-    backgroundColor: colours.primary,
+    backgroundColor: colours.button,
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
@@ -125,7 +126,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   mapButton: {
-    backgroundColor: colours.accent,
+    backgroundColor: colours.button,
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
@@ -135,14 +136,14 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   addButton: {
-    backgroundColor: colours.primary,
+    backgroundColor: colours.button,
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
   },
     devButton: {
-    backgroundColor: colours.primary,
+    backgroundColor: colours.button,
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
