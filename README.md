@@ -14,6 +14,11 @@ as it turns out expolla voi tehä molemmat, mobiili- ja webapin.
 
 mikä pitää ottaa huomioon on, että kaikki packaget ja muut mitkä alkaa react-native, pitää yleensä portata webversioksi jotenki kans, ei toimi webissä natiivisti, mutta se onnistuu semi-helposti käyttämällä sitä ihanaa kysymysmerkkioperaattoria, kuten vaikkapa tuolla `screens/Login.js` -tiedostossa, jossa ei browserissa saa dismissaa keyboardia, eli se piti tehdä näin: `onPress={Platform.OS === 'web' ? () => {} : Keyboard.dismiss}` (kysymysmerkin jälkeen ensimmäinen kohta (tyhjä funktio) pyörähtää, jos `Platform.OS` on `true`, ja jos ei ole, `Keyboard.dismiss`:llä näppis pois tieltä)
 
+
+## firebase setup
+
+tee project roottiin tiedosto nimeltään `firebase-auth.js`
+
 ## app structure
 
 appis toimii näin:

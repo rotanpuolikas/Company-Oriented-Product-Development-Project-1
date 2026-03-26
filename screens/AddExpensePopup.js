@@ -78,7 +78,7 @@ export default function AddExpensePopup({visible, onClose}) {
   }
 
   return (
-    <Modal transparent animationType="fade" visible={visible}>
+    <Modal transparent animationType="slide" visible={visible}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.popupOverlay}>
           <KeyboardAvoidingView
