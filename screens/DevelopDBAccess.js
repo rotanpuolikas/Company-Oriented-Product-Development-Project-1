@@ -5,6 +5,9 @@ import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
 import { styles } from '../theme/Theme.js'
 
+// DEFUNCT (almost), tulojen kirjottaminen täällä mitä ei muualta löyty mut popup hoitelee menojen kirjottamisen.
+// melkein kaikki tässä tiedostossa olevat funktiot löytyy myös AddExpensePopup.js:stä, ja ne on jopa kommentoitu siellä
+
 const DevelopDBAccess = () => {
   const { user } = useContext(AuthContext)
 
@@ -44,6 +47,7 @@ const DevelopDBAccess = () => {
       return
     }
 
+    // income pathing
     try {
       const userRef = collection(
         db,

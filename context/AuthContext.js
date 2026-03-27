@@ -5,6 +5,8 @@ import { auth } from "../firebase-auth";
 
 export const AuthContext = createContext()
 
+// magic file, do not touch
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
 
@@ -27,8 +29,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     await signOut(auth)
     await AsyncStorage.removeItem("user")
-    await AsyncStorage.removeItem("lastLocation") // forget last location so other users don't automatically load it
-    setUser(null) //null user proved to cause problems sometimes, looking for a fix
+    setUser(null) //null user proved to cause problems sometimes, but not looking for a fix
   };
 
   return (

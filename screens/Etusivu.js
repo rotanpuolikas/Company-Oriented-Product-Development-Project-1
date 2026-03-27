@@ -12,7 +12,6 @@ import AddExpensePopup from './AddExpensePopup.js'
 
 const Etusivu = () => {
   const { user } = useContext(AuthContext)
-  const navigation = useNavigation()
 
   const [loading, setLoading] = useState(true)
   const [pieData, setPieData] = useState([])
@@ -22,11 +21,11 @@ const Etusivu = () => {
   const fetchData = async () => {
   try {
     
-    const today = new Date()
+    const today = new Date() // muodostetaan se firebasen käyttämä March2026 / April2026 formaatti collectioneille
     const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
     
     const userRefIncome = collection(db, "users", user.uid, "userIncomes")
-    const userRefExpense = collection(db, "users", user.uid, `${formatDay}_expenses`)
+    const userRefExpense = collection(db, "users", user.uid, `${formatDay}_expenses`) // <- hakee tämänhetkisen kuukauden datat firebasesta, joku logiikkamuutos tehtävä jos halutaan aikaisempia kuukausia tutkia
     const snapshotIncome = await getDocs(userRefIncome)
     const snapshotExpense = await getDocs(userRefExpense)
     const dataIncome = snapshotIncome.docs.map((doc) => ({
@@ -37,7 +36,8 @@ const Etusivu = () => {
       id: doc.id,
       ...doc.data(),
     }))
-    // use dataIncome/dataExpense, not incomes/expenses
+
+    // piirretään firebasesta haettu data piirakkadiagrammiin
     setPieData([
       ...dataIncome.map((item) => ({
         value: item.amount / 100,
@@ -55,7 +55,7 @@ const Etusivu = () => {
   }
   setLoading(false)
 }
-  useFocusEffect(
+  useFocusEffect( // autorefresh aina kun klikataan takasin etusivulle
     React.useCallback(() => {
       fetchData()
     }, [])
@@ -83,7 +83,7 @@ const Etusivu = () => {
       </View>
 
       <TouchableOpacity style={styles.buttonFrontpage} onPress={() => setShowPopup(true)}>
-        <Ionicons name="add-outline" size={30} color={'#000'}/>
+        <Ionicons name="add-outline" size={30} color={'#000'}/> {/* popup nappi, itse popup löytyy AddExpensePopup.js:stä */}
       </TouchableOpacity>
       
       <AddExpensePopup visible={showPopup} onClose={(added) => {setShowPopup(false); if(added){fetchData()}}} />

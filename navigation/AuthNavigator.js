@@ -3,7 +3,7 @@ import Login from "../screens/Login"
 
 const Stack = createNativeStackNavigator()
 
-// login only start screen
+// login only start screen, still using stacknavigator just because
 
 const AuthNavigator = () => {
   return (

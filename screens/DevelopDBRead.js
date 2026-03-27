@@ -21,6 +21,7 @@ const DevelopDBRead = () => {
   const [ieState, setIEState] = useState(false)
 
   const fetchData = async () => {
+    // mistä luetaan tulot
     try {
       const userRefIncome = collection(
         db,
@@ -28,9 +29,11 @@ const DevelopDBRead = () => {
         user.uid,
         "userIncomes"
       )
-      
+
+      // sitä samaa päiväformatointia
       const today = new Date()
       const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
+      // mistä luetaan menot
       const userRefExpense = collection(
         db,
         "users",
@@ -38,6 +41,7 @@ const DevelopDBRead = () => {
         `${formatDay}_expenses`
       )
 
+      // otetaan snapshotit niistä jotka pidetään muistissa, ettei tartte aina prkl olla hakemassa sitä dataa
       const snapshotIncome = await getDocs(userRefIncome)
       const snapshotExpense = await getDocs(userRefExpense)
 
@@ -52,17 +56,21 @@ const DevelopDBRead = () => {
 
       setIncomes(dataIncome)
       setExpenses(dataExpense)
-    } catch (error) {
+      
+    } catch (error) { //jja jos tulee virhe databaseoperaatioissa, kerrotaan siitä ja jatketaan toimintaa, ei upota kuin titanic
       console.log(error)
     }
 
     setLoading(false)
   }
+  // autorefresh
   useFocusEffect(
     React.useCallback(() => {
       fetchData()
     }, [])
   )
+
+  // databasesta poistaminen, helpompaa ku kirjottaminen IMO
   const handleRemoveIncome = async (incomeId) => {
     try{
       const locationRef = doc(
@@ -102,6 +110,7 @@ const DevelopDBRead = () => {
     }
   }
 
+  // jokasen elementin piirtäminen erikseen
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.cardTopRow}>

@@ -6,10 +6,10 @@ import AuthNavigator from "./navigation/AuthNavigator"
 import MainNavigator from "./navigation/MainNavigator"
 
 const RootNavigation = () => {
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext) // käyttäjätunnari / käyttähäinfot
 
-  return (
-    <NavigationContainer>
+  return ( 
+    <NavigationContainer> {/* näytetään joko päänäkymä (MainNavigator) tai login (AuthNavigator), riippuu onko käyttäjä kirjautunut sisälle */}
       {user ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   )

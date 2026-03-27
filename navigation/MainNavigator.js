@@ -21,7 +21,7 @@ const MainNavigator = () => {
   const { logout, user } = useContext(AuthContext)
   
   return (
-    <Tab.Navigator // this looks terrible but i found this to look the best (in-app)
+    <Tab.Navigator // yläpalkissa oleva logout nappi
       screenOptions={{
           tabBarStyle: {
             backgroundColor: colours.primary
@@ -36,7 +36,7 @@ const MainNavigator = () => {
           </TouchableOpacity>), headerTitle: `Welcome ${user?.email}`,}}> 
         
       <Tab.Screen name="Etusivu" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="home-outline" size={size} color={color}/> // this is UGLY and horribly convoluted but eh it works
+        <Ionicons name="home-outline" size={size} color={color}/> // alareunan valikkonapit, temporary, tullaan siirtyyn toisenlaiseen navigaatioon joskus
       }} />
       
       <Tab.Screen name="Dev db add" component={DevelopDBAccess} options={{tabBarIcon: ({color, size }) =>
