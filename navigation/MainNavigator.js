@@ -28,12 +28,21 @@ const MainNavigator = () => {
           },
           tabBarActiveTintColor: colours.secondary,
           tabBarInactiveTintColor: 'gray',
+          headerStyle: {
+            backgroundColor: colours.primary,
+            height: 110,
+          },
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => {}} style={{margin: 'auto', marginLeft: 10}}>
+            <Ionicons name="menu-outline" color={'#000000'} size={30}/>
+          </TouchableOpacity>
+        ),
         headerRight: () => (
           <TouchableOpacity onPress={logout} style={{ marginRight: 15 }}>
             <Text style={{ color: colours.linkText, fontWeight: "600" }}>
               Logout
             </Text>
-          </TouchableOpacity>), headerTitle: `Welcome ${user?.email}`,}}> 
+          </TouchableOpacity>), headerTitle: `MassiMappi`,}}> 
         
       <Tab.Screen name="Etusivu" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
         <Ionicons name="home-outline" size={size} color={color}/> // alareunan valikkonapit, temporary, tullaan siirtyyn toisenlaiseen navigaatioon joskus
