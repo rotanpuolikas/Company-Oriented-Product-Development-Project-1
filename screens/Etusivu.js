@@ -83,7 +83,7 @@ const Etusivu = () => {
       </View>
 
       <TouchableOpacity style={styles.buttonFrontpage} onPress={() => setShowPopup(true)}>
-        <Ionicons name="add-outline" size={30} color={'#000'}/> {/* popup nappi, itse popup löytyy AddExpensePopup.js:stä */}
+        <Ionicons name="add-outline" size={30} color={'#000'}/>
       </TouchableOpacity>
       
       <AddExpensePopup visible={showPopup} onClose={(added) => {setShowPopup(false); if(added){fetchData()}}} />
