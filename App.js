@@ -9,7 +9,7 @@ const RootNavigation = () => {
   const { user } = useContext(AuthContext) // käyttäjätunnari / käyttähäinfot
 
   return ( 
-    <NavigationContainer> {/* näytetään joko päänäkymä (MainNavigator) tai login (AuthNavigator), riippuu onko käyttäjä kirjautunut sisälle */}
+    <NavigationContainer>
       {user ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   )
