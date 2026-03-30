@@ -3,6 +3,10 @@ import { colours } from "./Colours.js"
 import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
+  kuukausiTeksti: {
+    marginTop: 30,
+    fontSize: 20,
+  },
   etusivu: {
     flex: 1,
     backgroundColor: "#FFFFFF",
@@ -15,13 +19,20 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  arrowsFrontpage: {
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 50,
+    bottom: 40,
+  },
   buttonFrontpage: {
     backgroundColor: colours.button,
     padding: 15,
     borderRadius: 50,
     width: '35%',
     alignSelf: 'center',
-    bottom: 30,
     height: '10%',
     alignItems: "center",
     justifyContent: 'center',
