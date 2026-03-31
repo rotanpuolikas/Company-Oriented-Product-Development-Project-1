@@ -51,7 +51,6 @@ const MainNavigator = () => {
           backgroundColor: colours.primary,
           height: 110,
         },
-        headerTitle: 'MassiMappi',
         headerTitleStyle: {
           fontSize: 24,
           fontWeight: 'bold',
@@ -59,10 +58,10 @@ const MainNavigator = () => {
         cardStyle: { flex: 1 },
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{ headerTitle: 'MassiMappi' }} />
       <Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings' }} />
       <Stack.Screen name="StaticManagement" component={StaticManagement} options={{ title: 'Static Incomes & Expenses' }} />
-      <Stack.Screen name="DeveloperThings" component={DeveloperThings} options={{ title: 'Developer Things' }} />
+      <Stack.Screen name="DeveloperThings" component={DeveloperThings} options={{ title: 'Developer' }} />
     </Stack.Navigator>
   )
 }
