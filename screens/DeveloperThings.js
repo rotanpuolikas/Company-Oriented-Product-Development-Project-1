@@ -1,12 +1,11 @@
-import React, { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { View, Text, TextInput, TouchableOpacity, Alert, Keyboard,
-         FlatList, ActivityIndicator, Pressable } from "react-native"
+         FlatList, ActivityIndicator, Pressable, ScrollView } from "react-native"
 import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
 import { styles } from '../theme/Theme.js'
 import { colours } from '../theme/Colours.js'
-import { useFocusEffect } from "@react-navigation/native"
 import Ionicons from "@expo/vector-icons/Ionicons"
 
 function parseMoneyInput(raw) {
@@ -26,52 +25,65 @@ const AddTab = () => {
   const { user } = useContext(AuthContext)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [amount, setAmount] = useState("")
+  const [amount, setAmount] = useState(0)
   const [rawAmount, setRawAmount] = useState("")
-  const [ieState, setIEState] = useState(false)
+  const [isIncome, setIsIncome] = useState(true)
+  const [isStatic, setIsStatic] = useState(false)
 
-  const handleAddIncome = async () => {
+  const handleAdd = async () => {
     Keyboard.dismiss()
     if (!name || !amount) { Alert.alert("Error", "Please enter name and amount"); return }
-    try {
-      await addDoc(collection(db, "users", user.uid, "userIncomes"), {
-        name, description, amount,
-        createdAt: serverTimestamp(),
-      })
-      Alert.alert("Success", "Income source added!")
-      setName(""); setDescription(""); setAmount(""); setRawAmount("")
-    } catch (error) {
-      console.log(error)
-      Alert.alert("Error", "Could not save income")
-    }
-  }
 
-  const handleAddExpense = async () => {
-    Keyboard.dismiss()
-    if (!name || !amount) { Alert.alert("Error", "Please enter name and amount"); return }
     const today = new Date()
     const formatDay = today.toLocaleDateString('en-US', { month: 'long' }) + today.getFullYear()
+
+    let collectionName
+    if (isIncome && isStatic)   collectionName = 'userStaticIncomes'
+    else if (isIncome)          collectionName = `${formatDay}_incomes`
+    else if (isStatic)          collectionName = 'userStaticExpenses'
+    else                        collectionName = `${formatDay}_expenses`
+
     try {
-      await addDoc(collection(db, "users", user.uid, `${formatDay}_expenses`), {
-        name, description, amount,
-        createdAt: new Date(),
+      await addDoc(collection(db, "users", user.uid, collectionName), {
+        name,
+        description,
+        amount,
+        createdAt: serverTimestamp(),
       })
-      Alert.alert("Success", "Expense added!")
-      setName(""); setDescription(""); setAmount(""); setRawAmount("")
+      Alert.alert("Success", `${isStatic ? 'Static ' : ''}${isIncome ? 'income' : 'expense'} added!`)
+      setName(""); setDescription(""); setRawAmount(""); setAmount(0)
     } catch (error) {
       console.log(error)
-      Alert.alert("Error", "Could not save expense")
+      Alert.alert("Error", "Could not save")
     }
   }
 
+  const typeLabel = `${isStatic ? 'Static ' : 'Monthly '}${isIncome ? 'Income' : 'Expense'}`
+
   return (
-    <View>
-      <TouchableOpacity style={styles.devButton} onPress={() => setIEState(!ieState)}>
-        <Text style={styles.buttonText}>Change to {ieState ? "expense" : "income"}</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>Add New {ieState ? "Income" : "Expense"}</Text>
+    <ScrollView>
+      <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+        <TouchableOpacity
+          style={[styles.button, { flex: 1, backgroundColor: isIncome ? colours.secondary : colours.button }]}
+          onPress={() => setIsIncome(!isIncome)}
+        >
+          <Text style={[styles.buttonText, { color: isIncome ? colours.card : colours.blackText }]}>
+            {isIncome ? 'Income' : 'Expense'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, { flex: 1, backgroundColor: isStatic ? colours.secondary : colours.button }]}
+          onPress={() => setIsStatic(!isStatic)}
+        >
+          <Text style={[styles.buttonText, { color: isStatic ? colours.card : colours.blackText }]}>
+            {isStatic ? 'Static' : 'Monthly'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.title}>Add New {typeLabel}</Text>
       <TextInput
-        placeholder={ieState ? "Income name" : "Expense name"}
+        placeholder={`${typeLabel} name`}
         value={name} onChangeText={setName}
         style={styles.input}
       />
@@ -87,10 +99,10 @@ const AddTab = () => {
         style={styles.input}
         keyboardType="numeric"
       />
-      <TouchableOpacity style={styles.button} onPress={ieState ? handleAddIncome : handleAddExpense}>
-        <Text style={styles.buttonText}>Save {ieState ? "income" : "expense"}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleAdd}>
+        <Text style={styles.buttonText}>Save {typeLabel}</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -117,6 +129,7 @@ const ListTab = () => {
   }
 
   const fetchData = async () => {
+    setLoading(true)
     try {
       const formatDay = currentMonth.toLocaleDateString('en-US', { month: 'long' }) + currentMonth.getFullYear()
       const [snapSI, snapSE, snapME, snapMI] = await Promise.all([
@@ -135,7 +148,7 @@ const ListTab = () => {
     setLoading(false)
   }
 
-  useFocusEffect(React.useCallback(() => { fetchData() }, [currentMonth]))
+  useEffect(() => { fetchData() }, [currentMonth])
 
   const handleRemoveIncome = async (id) => {
     try {
@@ -198,22 +211,34 @@ const ListTab = () => {
       <Text style={styles.kuukausiTeksti}>
         {currentMonth.toLocaleDateString('en-US', { month: 'long' }) + ' ' + currentMonth.getFullYear()}
       </Text>
-      <TouchableOpacity style={styles.devButton} onPress={() => setIEState(!ieState)}>
-        <Text style={styles.buttonText}>Showing {ieState ? "incomes" : "expenses"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.devButton} onPress={() => setSmState(!smState)}>
-        <Text style={styles.buttonText}>Showing {smState ? "static" : "monthly"}</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+        <TouchableOpacity
+          style={[styles.button, { flex: 1, backgroundColor: ieState ? colours.secondary : colours.button }]}
+          onPress={() => setIEState(!ieState)}
+        >
+          <Text style={[styles.buttonText, { color: ieState ? colours.card : colours.blackText }]}>
+            {ieState ? 'Incomes' : 'Expenses'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, { flex: 1, backgroundColor: smState ? colours.secondary : colours.button }]}
+          onPress={() => setSmState(!smState)}
+        >
+          <Text style={[styles.buttonText, { color: smState ? colours.card : colours.blackText }]}>
+            {smState ? 'Static' : 'Monthly'}
+          </Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
+        style={{ flex: 1 }}
         data={listData}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={
           <Text style={styles.empty}>No {smState ? "static" : "monthly"} {ieState ? "incomes" : "expenses"} yet.</Text>
         }
-        scrollEnabled={false}
       />
-      <View style={styles.arrowsFrontpage}>
+      <View style={[styles.arrowsFrontpage, { marginTop: 12 }]}>
         <TouchableOpacity onPress={() => setCurrentMonth(addMonths(currentMonth, -1))}>
           <Ionicons name='arrow-back-outline' size={30} color={'#000'} />
         </TouchableOpacity>
