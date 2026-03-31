@@ -35,27 +35,41 @@ const Etusivu = () => {
     
     const formatDay = currentMonth.toLocaleDateString('en-US', {month: 'long'}) + currentMonth.getFullYear()
     
-    const userRefIncome = collection(db, "users", user.uid, "userIncomes")
-    const userRefExpense = collection(db, "users", user.uid, `${formatDay}_expenses`) // <- hakee tämänhetkisen kuukauden datat firebasesta, joku logiikkamuutos tehtävä jos halutaan aikaisempia kuukausia tutkia
-    const snapshotIncome = await getDocs(userRefIncome)
-    const snapshotExpense = await getDocs(userRefExpense)
-    const dataIncome = snapshotIncome.docs.map((doc) => ({
+    const userRefStaticIncome = collection(db, "users", user.uid, "userStaticIncomes")
+    const userRefStaticExpense = collection(db, "users", user.uid, "userStaticExpenses")
+    const userRefMonthExpense = collection(db, "users", user.uid, `${formatDay}_expenses`) // <- hakee tämänhetkisen kuukauden datat firebasesta, joku logiikkamuutos tehtävä jos halutaan aikaisempia kuukausia tutkia
+    const userRefMonthIncome = collection(db, "users", user.uid, `${formatDay}_incomes`)
+    
+    const snapshotStaticIncome = await getDocs(userRefStaticIncome)
+    const snapshotStaticExpense = await getDocs(userRefStaticExpense)
+    const snapshotMonthExpense = await getDocs(userRefMonthExpense)
+    const snapshotMonthIncome = await getDocs(userRefMonthIncome)
+    
+    const dataStaticIncome = snapshotStaticIncome.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }))
-    const dataExpense = snapshotExpense.docs.map((doc) => ({
+    const dataStaticExpense = snapshotStaticExpense.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    const dataMonthIncome = snapshotMonthIncome.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    const dataMonthExpense = snapshotMonthExpense.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }))
 
     // piirretään firebasesta haettu data piirakkadiagrammiin
     setPieData([
-      ...dataIncome.map((item) => ({
+      ...dataStaticIncome.map((item) => ({
         value: item.amount / 100,
         color: colours.income,
         text: item.name,
       })),
-      ...dataExpense.map((item) => ({
+      ...dataMonthExpense.map((item) => ({
         value: item.amount / 100,
         color: colours.expense,
         text: item.name,
@@ -110,7 +124,7 @@ const Etusivu = () => {
         <Ionicons name='arrow-forward-outline' size={30} color={'#000'} />
       </TouchableOpacity>
       </View>
-      <AddExpensePopup visible={showPopup} onClose={(added) => {setShowPopup(false); if(added){fetchData()}}} />
+      <AddExpensePopup selectedMonth={currentMonth} visible={showPopup} onClose={(added) => {setShowPopup(false); if(added){fetchData()}}} />
     </View>
   )
 }

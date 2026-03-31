@@ -6,7 +6,7 @@ import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
 import { useState, useContext } from "react";
 
-export default function AddExpensePopup({visible, onClose}) {
+export default function AddExpensePopup({selectedMonth, visible, onClose}) {
   const { user } = useContext(AuthContext)
 
   const [name, setName] = useState("")
@@ -45,8 +45,7 @@ export default function AddExpensePopup({visible, onClose}) {
       return
     }
 
-    const today = new Date() // muodostetaan se KuukausiVuosi formaatti millä nää tallennetaan
-    const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
+    const formatDay = selectedMonth.toLocaleDateString('en-US', {month: 'long'}) + selectedMonth.getFullYear()
 
     // expense pathing, eli mihin firestoressa ne laitetaan
     try {

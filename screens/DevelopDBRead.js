@@ -15,47 +15,65 @@ const DevelopDBRead = () => {
   const { user } = useContext(AuthContext)
   const navigation = useNavigation()
 
-  const [incomes, setIncomes] = useState([])
-  const [expenses, setExpenses] = useState([])
+  const [staticIncomes, setStaticIncomes] = useState([])
+  const [staticExpenses, setStaticExpenses] = useState([])
+  const [monthIncomes, setMonthIncomes] = useState([])
+  const [monthExpenses, setMonthExpenses] = useState([])
+  
   const [loading, setLoading] = useState(true)
   const [ieState, setIEState] = useState(false)
+  const [smState, setSMState] = useState(false)
+
+  const [currentMonth, setCurrentMonth] = useState(new Date())
+
+  function addMonths(date, months) {
+    const d = new Date(date)
+    const dayOfMonth = d.getDate()
+    d.setMonth(d.getMonth() + months)
+    if (d.getDate() !== dayOfMonth) {
+      d.setDate(0)
+    }
+    return d
+  }
+
 
   const fetchData = async () => {
     // mistä luetaan tulot
     try {
-      const userRefIncome = collection(
-        db,
-        "users",
-        user.uid,
-        "userIncomes"
-      )
+      const formatDay = currentMonth.toLocaleDateString('en-US', {month: 'long'}) + currentMonth.getFullYear()
 
-      // sitä samaa päiväformatointia
-      const today = new Date()
-      const formatDay = today.toLocaleDateString('en-US', {month: 'long'}) + today.getFullYear()
-      // mistä luetaan menot
-      const userRefExpense = collection(
-        db,
-        "users",
-        user.uid,
-        `${formatDay}_expenses`
-      )
-
-      // otetaan snapshotit niistä jotka pidetään muistissa, ettei tartte aina prkl olla hakemassa sitä dataa
-      const snapshotIncome = await getDocs(userRefIncome)
-      const snapshotExpense = await getDocs(userRefExpense)
-
-      const dataIncome = snapshotIncome.docs.map((doc) => ({
+      
+      const userRefStaticIncome = collection(db, "users", user.uid, "userStaticIncomes")
+      const userRefStaticExpense = collection(db, "users", user.uid, "userStaticExpenses")
+      const userRefMonthExpense = collection(db, "users", user.uid, `${formatDay}_expenses`) // <- hakee tämänhetkisen kuukauden datat firebasesta, joku logiikkamuutos tehtävä jos halutaan aikaisempia kuukausia tutkia
+      const userRefMonthIncome = collection(db, "users", user.uid, `${formatDay}_incomes`)
+      
+      const snapshotStaticIncome = await getDocs(userRefStaticIncome)
+      const snapshotStaticExpense = await getDocs(userRefStaticExpense)
+      const snapshotMonthExpense = await getDocs(userRefMonthExpense)
+      const snapshotMonthIncome = await getDocs(userRefMonthIncome)
+      
+      const dataStaticIncome = snapshotStaticIncome.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }))
-      const dataExpense = snapshotExpense.docs.map((doc) => ({
+      const dataStaticExpense = snapshotStaticExpense.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }))
-
-      setIncomes(dataIncome)
-      setExpenses(dataExpense)
+      const dataMonthIncome = snapshotMonthIncome.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      const dataMonthExpense = snapshotMonthExpense.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      
+      setStaticIncomes(dataStaticIncome)
+      setStaticExpenses(dataStaticExpense)
+      setMonthIncomes(dataMonthIncome)
+      setMonthExpenses(dataMonthExpense)
       
     } catch (error) { //jja jos tulee virhe databaseoperaatioissa, kerrotaan siitä ja jatketaan toimintaa, ei upota kuin titanic
       console.log(error)
@@ -77,7 +95,7 @@ const DevelopDBRead = () => {
         db,
         "users",
         user.uid,
-        "userIncomes",
+        "userStaticIncomes",
         incomeId
       )
 
@@ -137,16 +155,20 @@ const DevelopDBRead = () => {
 
   return (
     <View style={styles.container}>
+    <View style={styles.hCenter}>
+        <Text style={styles.kuukausiTeksti}>{currentMonth.toLocaleDateString('en-US', {month: 'long'}) + ' ' + currentMonth.getFullYear()}</Text>
+        </View>
+
       <TouchableOpacity style={styles.devButton} onPress={() => {setIEState(!ieState)}}>
         <Text style={styles.buttonText}>Change to {ieState ? "expense" : "income"}</Text>
       </TouchableOpacity>
 
       <FlatList
-        data={ieState ? incomes : expenses}
+        data={smState ? staticIncomes : staticExpenses}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={styles.empty}>No {ieState ? "incomes" : "expenses"} added yet.</Text>
+          <Text style={styles.empty}>No {smState ? "static" : "monthly"} incomes added yet.</Text>
         }
       />
 
@@ -156,6 +178,16 @@ const DevelopDBRead = () => {
       >
         <Text style={styles.addButtonText}>+ Add Data</Text>
       </TouchableOpacity>
+      <View style={styles.arrowsFrontpage}>
+      <TouchableOpacity onPress={() => setCurrentMonth(addMonths(currentMonth, -1))}>
+        <Ionicons name='arrow-back-outline' size={30} color={'#000'} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+        <Ionicons name='arrow-forward-outline' size={30} color={'#000'} />
+      </TouchableOpacity>
+      </View>
+
     </View>
   )
 }
