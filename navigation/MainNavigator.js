@@ -1,62 +1,70 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { createStackNavigator } from "@react-navigation/stack"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { useContext } from "react"
-
-import { TouchableOpacity, Text } from "react-native"
-
+import { useContext, useState, useLayoutEffect } from "react"
+import { Pressable, View } from "react-native"
 import { colours } from "../theme/Colours.js"
-
 import { AuthContext } from "../context/AuthContext"
-
 import Etusivu from "../screens/Etusivu"
-import DevelopDBAccess from "../screens/DevelopDBAccess"
-import DevelopDBRead from "../screens/DevelopDBRead"
+import HamburgerMenu from "../screens/HamburgerMenu"
+import Settings from "../screens/Settings"
+import StaticManagement from "../screens/StaticManagement"
+import DeveloperThings from "../screens/DeveloperThings"
 
-const Tab = createBottomTabNavigator()
+const Stack = createStackNavigator()
 
-// basic bottom navigation bar thingy
+const HomeScreen = ({ navigation }) => {
+  const { logout } = useContext(AuthContext)
+  const [showHamburger, setShowHamburger] = useState(false)
 
-const MainNavigator = () => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Pressable
+          onPress={() => setShowHamburger(true)}
+          android_ripple={null}
+          style={{ alignSelf: 'stretch', justifyContent: 'center', paddingHorizontal: 18 }}
+        >
+          <Ionicons name="menu-outline" color={'#000000'} size={32} />
+        </Pressable>
+      ),
+    })
+  }, [navigation])
 
-  const { logout, user } = useContext(AuthContext)
-  
   return (
-    <Tab.Navigator // yläpalkissa oleva logout nappi
-      screenOptions={{
-          tabBarStyle: {
-            backgroundColor: colours.primary
-          },
-          tabBarActiveTintColor: colours.secondary,
-          tabBarInactiveTintColor: 'gray',
-          headerStyle: {
-            backgroundColor: colours.primary,
-            height: 110,
-          },
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => {}} style={{margin: 'auto', marginLeft: 10}}>
-            <Ionicons name="menu-outline" color={'#000000'} size={30}/>
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <TouchableOpacity onPress={logout} style={{ marginRight: 15 }}>
-            <Text style={{ color: colours.linkText, fontWeight: "600" }}>
-              Logout
-            </Text>
-          </TouchableOpacity>), headerTitle: `MassiMappi`,}}> 
-        
-      <Tab.Screen name="Etusivu" component={Etusivu} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="home-outline" size={size} color={color}/> // alareunan valikkonapit, temporary, tullaan siirtyyn toisenlaiseen navigaatioon joskus
-      }} />
-      
-      <Tab.Screen name="Dev db add" component={DevelopDBAccess} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="add-outline" size={size} color={color}/>
-      }} />
-
-      <Tab.Screen name="Dev db list" component={DevelopDBRead} options={{tabBarIcon: ({color, size }) =>
-        <Ionicons name="archive-outline" size={size} color={color}/>
-      }} />
-    </Tab.Navigator>
+    <View style={{ flex: 1 }}>
+      <Etusivu />
+      <HamburgerMenu
+        visible={showHamburger}
+        onClose={() => setShowHamburger(false)}
+        navigation={navigation}
+        logout={logout}
+      />
+    </View>
   )
 }
 
-export default MainNavigator;
+const MainNavigator = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colours.primary,
+          height: 110,
+        },
+        headerTitle: 'MassiMappi',
+        headerTitleStyle: {
+          fontSize: 24,
+          fontWeight: 'bold',
+        },
+        cardStyle: { flex: 1 },
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings' }} />
+      <Stack.Screen name="StaticManagement" component={StaticManagement} options={{ title: 'Static Incomes & Expenses' }} />
+      <Stack.Screen name="DeveloperThings" component={DeveloperThings} options={{ title: 'Developer Things' }} />
+    </Stack.Navigator>
+  )
+}
+
+export default MainNavigator
