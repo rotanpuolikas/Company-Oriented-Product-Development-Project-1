@@ -29,7 +29,6 @@ export const firebaseConfig = {
   messagingSenderId: 'replace-me',
   appId: 'replace-me'
 }
-  
 ```
 
 jja sitten itse firebasessa firestoren sääntöjen tulisi sisältää ainakin:
