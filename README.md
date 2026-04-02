@@ -17,7 +17,41 @@ mikä pitää ottaa huomioon on, että kaikki packaget ja muut mitkä alkaa reac
 
 ## firebase setup
 
-tee project roottiin tiedosto nimeltään `firebase-auth.js`
+tee project roottiin tiedosto nimeltään `firebaseConfig.js`, jonka sisältö on luokkaa:
+
+
+```
+export const firebaseConfig = {
+  apiKey: 'replace-me',
+  authDomain: 'replace-me',
+  projectId: 'replace-me',
+  storageBucket: 'replace-me',
+  messagingSenderId: 'replace-me',
+  appId: 'replace-me'
+}
+  
+```
+
+jja sitten itse firebasessa firestoren sääntöjen tulisi sisältää ainakin:
+
+```
+    match /users/{userId}/{yearMonth_expenses}/{expenseId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+    match /users/{userId}/{yearMonth_incomes}/{expenseId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+    match /users/{userId}/staticUserIncomes/{incomeId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+    match /users/{userId}/staticUserExpenses/{incomeId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+```
 
 ## app structure
 
