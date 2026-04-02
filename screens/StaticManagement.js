@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react"
-import { View, Text, TextInput, TouchableOpacity, Alert, Keyboard, ScrollView } from "react-native"
+import { View, Text, TextInput, TouchableOpacity, Alert, Keyboard, ScrollView, Platform } from "react-native"
 import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
@@ -44,7 +44,7 @@ const StaticManagement = () => {
   useEffect(() => { fetchStatic() }, [])
 
   const handleAdd = async () => {
-    Keyboard.dismiss()
+    if (Platform.OS !== 'web') Keyboard.dismiss()
     if (!name || !amount) {
       Alert.alert("Error", "Please enter name and amount")
       return

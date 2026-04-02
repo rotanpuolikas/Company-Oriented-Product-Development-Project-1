@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import { View, Text, TextInput, TouchableOpacity, Alert, Keyboard,
-         FlatList, ActivityIndicator, Pressable, ScrollView } from "react-native"
+         FlatList, ActivityIndicator, Pressable, ScrollView, Platform } from "react-native"
 import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
@@ -31,7 +31,7 @@ const AddTab = () => {
   const [isStatic, setIsStatic] = useState(false)
 
   const handleAdd = async () => {
-    Keyboard.dismiss()
+    if (Platform.OS !== 'web') Keyboard.dismiss()
     if (!name || !amount) { Alert.alert("Error", "Please enter name and amount"); return }
 
     const today = new Date()

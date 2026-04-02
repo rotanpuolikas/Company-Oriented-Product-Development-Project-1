@@ -1,6 +1,6 @@
 import { styles } from "../theme/Theme.js"
 import { colours } from "../theme/Colours.js"
-import { View, Animated, ActivityIndicator, TouchableOpacity, Text, FlatList } from "react-native"
+import { View, Animated, ActivityIndicator, TouchableOpacity, Text, FlatList, Platform } from "react-native"
 import React, { useState, useContext, useRef } from "react"
 import { db } from "../firebase-auth"
 import { useFocusEffect } from "@react-navigation/native"
@@ -80,10 +80,10 @@ const Etusivu = () => {
 
     if (scrollingDown && controlsVisible.current && y > 20) {
       controlsVisible.current = false
-      Animated.timing(controlsTranslateY, { toValue: 140, duration: 220, useNativeDriver: true }).start()
+      Animated.timing(controlsTranslateY, { toValue: 140, duration: 220, useNativeDriver: Platform.OS !== 'web' }).start()
     } else if (!scrollingDown && !controlsVisible.current) {
       controlsVisible.current = true
-      Animated.timing(controlsTranslateY, { toValue: 0, duration: 220, useNativeDriver: true }).start()
+      Animated.timing(controlsTranslateY, { toValue: 0, duration: 220, useNativeDriver: Platform.OS !== 'web' }).start()
     }
   }
 

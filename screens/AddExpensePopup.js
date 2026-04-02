@@ -6,6 +6,9 @@ import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
 import { useState, useContext } from "react";
 
+const KeyboardWrapper = Platform.OS === 'web' ? View : KeyboardAvoidingView;
+const DismissWrapper = Platform.OS === 'web' ? View : TouchableWithoutFeedback;
+
 export default function AddExpensePopup({selectedMonth, visible, onClose}) {
   const { user } = useContext(AuthContext)
 
@@ -33,8 +36,8 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
 }
 
   const handleAddExpense = async () => {
-    Keyboard.dismiss() // get that keyboard out of the way
-    
+    if (Platform.OS !== 'web') Keyboard.dismiss() // get that keyboard out of the way
+
     if (!name || !amount) { // ei tule koskaan erroraamaan tähän
       Alert.alert("Error", "Please enter name and amount")
       return
@@ -80,9 +83,9 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
 
   return (
     <Modal transparent animationType="slide" visible={visible}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <DismissWrapper onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
         <View style={styles.popupOverlay}>
-          <KeyboardAvoidingView
+          <KeyboardWrapper
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{ width: '100%', alignItems: 'center' }}
             keyboardVerticalOffset={20}
@@ -130,9 +133,9 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
                 </Text>
               </TouchableOpacity>
             </View>
-          </KeyboardAvoidingView>
+          </KeyboardWrapper>
         </View>
-      </TouchableWithoutFeedback>
+      </DismissWrapper>
     </Modal>
   )
 }

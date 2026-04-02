@@ -1,7 +1,15 @@
 import { createContext, useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebase-auth";
+
+const storage = Platform.OS === 'web'
+  ? {
+      getItem: (key) => Promise.resolve(localStorage.getItem(key)),
+      setItem: (key, value) => Promise.resolve(localStorage.setItem(key, value)),
+      removeItem: (key) => Promise.resolve(localStorage.removeItem(key)),
+    }
+  : require("@react-native-async-storage/async-storage").default;
 
 export const AuthContext = createContext()
 
@@ -12,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUser = async () => {
-      const storedUser = await AsyncStorage.getItem("user"); // autologin
+      const storedUser = await storage.getItem("user"); // autologin
       if (storedUser) {
         setUser(JSON.parse(storedUser))
       }
@@ -23,12 +31,12 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const res = await signInWithEmailAndPassword(auth, email, password);
     setUser(res.user)
-    await AsyncStorage.setItem("user", JSON.stringify(res.user)) // set asyncstorage for autologin
+    await storage.setItem("user", JSON.stringify(res.user)) // set asyncstorage for autologin
   };
 
   const logout = async () => {
     await signOut(auth)
-    await AsyncStorage.removeItem("user")
+    await storage.removeItem("user")
     setUser(null) //null user proved to cause problems sometimes, but not looking for a fix
   };
 

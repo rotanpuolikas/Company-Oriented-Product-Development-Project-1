@@ -4,9 +4,11 @@ import { AuthContext } from "../context/AuthContext"
 import { styles } from "../theme/Theme.js"
 import { colours } from "../theme/Colours.js"
 
+const KeyboardWrapper = Platform.OS === 'web' ? View : KeyboardAvoidingView;
+
 const Login = () => {
   const { login } = useContext(AuthContext)
-  
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -27,7 +29,7 @@ const Login = () => {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.loginContainer} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardWrapper style={styles.loginContainer} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TouchableWithoutFeedback onPress={Platform.OS === 'web' ? () => {} : Keyboard.dismiss}>
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={styles.title}>Welcome Back</Text>
@@ -63,7 +65,7 @@ const Login = () => {
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+    </KeyboardWrapper>
   )
 }
 
