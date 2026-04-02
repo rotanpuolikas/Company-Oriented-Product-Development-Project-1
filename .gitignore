@@ -2,7 +2,7 @@
 
 
 # secrets
-firebase-auth.js
+firebaseConfig.js
 # --------------------- #
 # mobile app .gitignore #
 # --------------------- #
