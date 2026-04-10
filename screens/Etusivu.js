@@ -90,7 +90,7 @@ const Etusivu = () => {
   // Build pie data inline so it reacts to selectedId changes
   const totalMonthExpense = monthExpenses.reduce((s, e) => s + e.amount, 0)
   const remaining = Math.max(0, totalIncome - totalStaticExpense - totalMonthExpense)
-
+  const balance = totalIncome - totalStaticExpense - totalMonthExpense //testi saanko saldon näkymään
   const pieData = []
   if (remaining > 0) {
     pieData.push({
@@ -166,6 +166,9 @@ const Etusivu = () => {
           <View style={{ alignItems: 'center' }}>
             <Text style={styles.kuukausiTeksti}>
               {currentMonth.toLocaleDateString('en-US', { month: 'long' }) + ' ' + currentMonth.getFullYear()}
+            </Text>
+            <Text>
+              {(balance / 100).toFixed(2)} €
             </Text>
             <PieChart
               data={pieData}
