@@ -36,6 +36,7 @@ const AddTab = () => {
 
     const today = new Date()
     const formatDay = today.toLocaleDateString('en-US', { month: 'long' }) + today.getFullYear()
+    // helpoin tapa tehä tää collection homma, ei tartte duplicateja sun muuta, katotaan vaan collectionName kuntoon
 
     let collectionName
     if (isIncome && isStatic)   collectionName = 'userStaticIncomes'
