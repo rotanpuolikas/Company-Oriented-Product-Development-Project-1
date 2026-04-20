@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { Platform } from "react-native";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-auth";
 
 const storage = Platform.OS === 'web'
@@ -28,6 +28,12 @@ export const AuthProvider = ({ children }) => {
     loadUser()
   }, [])
 
+  const register = async (email, password) => {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    setUser(res.user)
+    await storage.setItem("user", JSON.stringify(res.user))
+  };
+
   const login = async (email, password) => {
     const res = await signInWithEmailAndPassword(auth, email, password);
     setUser(res.user)
@@ -41,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   )
