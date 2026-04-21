@@ -92,7 +92,7 @@ export default {
   staticLabel: 'Kiinteä',
   monthly: 'Kuukausittainen',
   incomes: 'Tulot',
-  nothingHereYet: 'Ei vielä mitään.',
+  nothingHereYet: 'Tyhjää täynnä.',
 
   // Type words used to build labels in DeveloperThings
   typeIncome: 'Tulo',
