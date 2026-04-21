@@ -43,5 +43,6 @@ export async function addItem(uid, item) {
 export async function deleteItem(uid, itemId) {
   if (!uid || !itemId) throw new Error('Missing uid or item id')
   return deleteDoc(doc(db, 'users', uid, 'budgetItems', itemId))
-}
+} /// mikä on budgetItems? tämmöstä collectionia ei ole olemassa, collectionit on tällaiset:
+// MonthYear_expenses (April2026_expenses for example), userStaticIncomes, userStaticExpenses
 // mockData.js - simuloitu tietolähde, joka käyttää Firebase Firestorea tietojen tallentamiseen ja hakemiseen, halusin itkeä tämän kanssa
