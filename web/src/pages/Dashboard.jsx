@@ -23,13 +23,13 @@ export default function DashboardPage() {
 
     const loadData = async () => {
       setStaticIncomes(await fetchItemsByType(user.uid, 'staticIncome'))
-      setMonthlyIncomes(await fetchItemsByType(user.uid, 'monthlyIncome'))
+      setMonthlyIncomes(await fetchItemsByType(user.uid, 'monthlyIncome', currentMonth))
       setStaticExpenses(await fetchItemsByType(user.uid, 'staticExpense'))
-      setExpenses(await fetchItemsByType(user.uid, 'monthlyExpense'))
+      setExpenses(await fetchItemsByType(user.uid, 'monthlyExpense', currentMonth))
     }
 
     loadData()
-  }, [user])
+  }, [user, currentMonth])
 
   const totalIncome = useMemo(
     () => [...staticIncomes, ...monthlyIncomes].reduce((sum, item) => sum + item.amount, 0),
@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
   const handleSaveExpense = async (expense) => {
     if (!user) return
-    const saved = await addItem(user.uid, { ...expense, type: 'monthlyExpense' })
+    const saved = await addItem(user.uid, { ...expense, type: 'monthlyExpense' }, currentMonth)
     setExpenses((prev) => [saved, ...prev])
   }
 

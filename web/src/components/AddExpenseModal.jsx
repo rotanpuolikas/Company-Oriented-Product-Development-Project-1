@@ -17,12 +17,7 @@ export default function AddExpenseModal({ open, onClose, onSave }) {
       return
     }
 
-    onSave({
-      id: crypto.randomUUID(),
-      name,
-      description,
-      amount,
-    })
+    onSave({ name, description, amount })
 
     setName('')
     setDescription('')

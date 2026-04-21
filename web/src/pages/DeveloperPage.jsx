@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
 import { fetchItemsByType, addItem, deleteItem } from '../data/mockData'
 import { formatMoney, parseMoneyInput } from '../utilities/money'
+import { addMonths, formatMonthYear } from '../utilities/dates'
 
 export default function DeveloperPage() {
   const { user } = useContext(AuthContext)
@@ -13,6 +14,7 @@ export default function DeveloperPage() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [rawAmount, setRawAmount] = useState('')
+  const [currentMonth, setCurrentMonth] = useState(new Date())
   const [listType, setListType] = useState({ isIncome: false, isStatic: false })
   const [data, setData] = useState({
     staticIncomes: [],
@@ -28,15 +30,15 @@ export default function DeveloperPage() {
       const [staticIncomes, staticExpenses, monthIncomes, monthExpenses] = await Promise.all([
         fetchItemsByType(user.uid, 'staticIncome'),
         fetchItemsByType(user.uid, 'staticExpense'),
-        fetchItemsByType(user.uid, 'monthlyIncome'),
-        fetchItemsByType(user.uid, 'monthlyExpense'),
+        fetchItemsByType(user.uid, 'monthlyIncome', currentMonth),
+        fetchItemsByType(user.uid, 'monthlyExpense', currentMonth),
       ])
 
       setData({ staticIncomes, staticExpenses, monthIncomes, monthExpenses })
     }
 
     loadData()
-  }, [user])
+  }, [user, currentMonth])
 
   const handleAdd = async () => {
     const amount = parseMoneyInput(rawAmount)
@@ -46,8 +48,9 @@ export default function DeveloperPage() {
       ? isStatic ? 'staticIncome' : 'monthlyIncome'
       : isStatic ? 'staticExpense' : 'monthlyExpense'
 
+    const month = isStatic ? undefined : currentMonth
     const newItem = { name, description, amount, type }
-    const savedItem = await addItem(user.uid, newItem)
+    const savedItem = await addItem(user.uid, newItem, month)
     const key = isIncome
       ? isStatic ? 'staticIncomes' : 'monthIncomes'
       : isStatic ? 'staticExpenses' : 'monthExpenses'
@@ -64,7 +67,11 @@ export default function DeveloperPage() {
 
   const removeItem = async (id) => {
     if (!user) return
-    await deleteItem(user.uid, id)
+    const type = listType.isIncome
+      ? listType.isStatic ? 'staticIncome' : 'monthlyIncome'
+      : listType.isStatic ? 'staticExpense' : 'monthlyExpense'
+    const month = listType.isStatic ? undefined : currentMonth
+    await deleteItem(user.uid, id, type, month)
 
     const key = listType.isIncome
       ? listType.isStatic ? 'staticIncomes' : 'monthIncomes'
@@ -72,6 +79,11 @@ export default function DeveloperPage() {
 
     setData((prev) => ({ ...prev, [key]: prev[key].filter((item) => item.id !== id) }))
   }
+
+  const now = new Date()
+  const isCurrentMonth =
+    currentMonth.getMonth() === now.getMonth() &&
+    currentMonth.getFullYear() === now.getFullYear()
 
   return (
     <section>
@@ -117,6 +129,23 @@ export default function DeveloperPage() {
               {listType.isStatic ? t.staticLabel : t.monthly}
             </button>
           </div>
+
+          {!listType.isStatic && (
+            <div className="toggle-row" style={{ marginBottom: 12 }}>
+              <button className="secondary-button" onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}>
+                {t.previous}
+              </button>
+              <span>{formatMonthYear(currentMonth)}</span>
+              <button
+                className="secondary-button"
+                onClick={() => !isCurrentMonth && setCurrentMonth(addMonths(currentMonth, 1))}
+                disabled={isCurrentMonth}
+              >
+                {t.next}
+              </button>
+            </div>
+          )}
+
           <div className="simple-list">
             {currentList.length === 0 ? (
               <p className="muted-text">{t.nothingHereYet}</p>

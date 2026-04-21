@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
-import { fetchItemsByType, addItem } from '../data/mockData'
+import { fetchItemsByType, addItem, deleteItem } from '../data/mockData'
 import { parseMoneyInput, formatMoney } from '../utilities/money'
 
 export default function StaticManagementPage() {
@@ -65,6 +65,14 @@ export default function StaticManagementPage() {
     setRawAmount('')
   }
 
+  const handleRemove = async (id, type) => {
+    await deleteItem(user.uid, id, type)
+    setItems((prev) => ({
+      incomes: type === 'staticIncome' ? prev.incomes.filter((i) => i.id !== id) : prev.incomes,
+      expenses: type === 'staticExpense' ? prev.expenses.filter((i) => i.id !== id) : prev.expenses,
+    }))
+  }
+
   return (
     <section>
       <div className="page-header">
@@ -116,7 +124,10 @@ export default function StaticManagementPage() {
               <div key={item.id} className="list-card income-border">
                 <div className="row-between">
                   <strong>{item.name}</strong>
-                  <span>{formatMoney(item.amount)}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span>{formatMoney(item.amount)}</span>
+                    <button className="icon-button" onClick={() => handleRemove(item.id, 'staticIncome')}>×</button>
+                  </div>
                 </div>
                 {item.description ? <p>{item.description}</p> : null}
               </div>
@@ -130,7 +141,10 @@ export default function StaticManagementPage() {
               <div key={item.id} className="list-card expense-border">
                 <div className="row-between">
                   <strong>{item.name}</strong>
-                  <span>{formatMoney(item.amount)}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span>{formatMoney(item.amount)}</span>
+                    <button className="icon-button" onClick={() => handleRemove(item.id, 'staticExpense')}>×</button>
+                  </div>
                 </div>
                 {item.description ? <p>{item.description}</p> : null}
               </div>
