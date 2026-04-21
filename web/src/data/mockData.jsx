@@ -9,7 +9,7 @@
 } from 'firebase/firestore'
 import { db } from '../firebase-auth'
 
-const userBudgetCollection = (uid) => collection(db, 'users', uid, 'budgetItems')
+const userBudgetCollection = (uid) => collection(db, 'users', uid, 'budgetItems') // no such thing as budgetItems
 
 const toItem = (docSnap) => ({ id: docSnap.id, ...docSnap.data() })
 
