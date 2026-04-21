@@ -24,7 +24,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -33,7 +34,8 @@ button {
   border: none;
 }
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 14px 16px;
   border-radius: 14px;

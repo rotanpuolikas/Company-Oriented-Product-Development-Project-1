@@ -19,6 +19,16 @@ function parseMoneyInput(raw) {
   return Math.floor(value * 100)
 }
 
+const PRESETS = {
+  income: [
+    { name: 'Opintotuki', amount: 27900 },
+    { name: 'Opintotuen asumislisä', amount: null },
+  ],
+  expense: [
+    { name: 'Rent', amount: null },
+  ],
+}
+
 const StaticManagement = () => {
   const { user } = useContext(AuthContext)
   const [name, setName] = useState("")
@@ -26,6 +36,7 @@ const StaticManagement = () => {
   const [rawAmount, setRawAmount] = useState("")
   const [amount, setAmount] = useState(0)
   const [isIncome, setIsIncome] = useState(true)
+  const [showPresets, setShowPresets] = useState(false)
   const [staticIncomes, setStaticIncomes] = useState([])
   const [staticExpenses, setStaticExpenses] = useState([])
 
@@ -42,6 +53,18 @@ const StaticManagement = () => {
   }
 
   useEffect(() => { fetchStatic() }, [])
+
+  const applyPreset = (preset) => {
+    setName(preset.name)
+    if (preset.amount !== null) {
+      setAmount(preset.amount)
+      setRawAmount((preset.amount / 100).toFixed(2))
+    } else {
+      setAmount(0)
+      setRawAmount("")
+    }
+    setShowPresets(false)
+  }
 
   const handleAdd = async () => {
     if (Platform.OS !== 'web') Keyboard.dismiss()
@@ -76,6 +99,44 @@ const StaticManagement = () => {
       </TouchableOpacity>
 
       <Text style={styles.title}>Add Static {isIncome ? "Income" : "Expense"}</Text>
+
+      <TouchableOpacity
+        style={[styles.devButton, { marginBottom: 8 }]}
+        onPress={() => setShowPresets(!showPresets)}
+      >
+        <Text style={styles.buttonText}>
+          {showPresets ? "Hide presets ▲" : "Choose preset ▼"}
+        </Text>
+      </TouchableOpacity>
+
+      {showPresets && (
+        <View style={{ marginBottom: 16 }}>
+          {(isIncome ? PRESETS.income : PRESETS.expense).map((preset) => (
+            <TouchableOpacity
+              key={preset.name}
+              onPress={() => applyPreset(preset)}
+              style={{
+                backgroundColor: colours.card,
+                borderWidth: 1,
+                borderColor: colours.borderColour,
+                borderRadius: 10,
+                padding: 14,
+                marginBottom: 8,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ color: colours.blackText, fontWeight: '600', fontSize: 15 }}>
+                {preset.name}
+              </Text>
+              <Text style={{ color: colours.textSecondary, fontSize: 13 }}>
+                {preset.amount !== null ? `€${(preset.amount / 100).toFixed(2)} (fixed)` : 'enter amount'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       <TextInput
         placeholder={isIncome ? "Income name" : "Expense name"}

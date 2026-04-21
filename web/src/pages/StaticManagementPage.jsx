@@ -3,6 +3,16 @@ import { AuthContext } from '../context/AuthContext'
 import { fetchItemsByType, addItem } from '../data/mockData'
 import { parseMoneyInput, formatMoney } from '../utilities/money'
 
+const PRESETS = {
+  income: [
+    { name: 'Opintotuki', amount: 27900 },
+    { name: 'Opintotuen asumislisä', amount: null },
+  ],
+  expense: [
+    { name: 'Rent', amount: null },
+  ],
+}
+
 export default function StaticManagementPage() {
   const { user } = useContext(AuthContext)
   const [isIncome, setIsIncome] = useState(true)
@@ -22,6 +32,17 @@ export default function StaticManagementPage() {
 
     loadItems()
   }, [user])
+
+  const handlePresetChange = (e) => {
+    const value = e.target.value
+    if (!value) return
+    const presets = isIncome ? PRESETS.income : PRESETS.expense
+    const preset = presets.find((p) => p.name === value)
+    if (!preset) return
+    setName(preset.name)
+    setRawAmount(preset.amount !== null ? (preset.amount / 100).toFixed(2) : '')
+    e.target.value = ''
+  }
 
   const handleAdd = async () => {
     const amount = parseMoneyInput(rawAmount)
@@ -65,6 +86,22 @@ export default function StaticManagementPage() {
           </div>
 
           <h3>Add Static {isIncome ? 'Income' : 'Expense'}</h3>
+
+          <select
+            defaultValue=""
+            onChange={handlePresetChange}
+            style={{ marginBottom: 12 }}
+          >
+            <option value="" disabled>Choose a preset...</option>
+            {(isIncome ? PRESETS.income : PRESETS.expense).map((preset) => (
+              <option key={preset.name} value={preset.name}>
+                {preset.name}
+                {preset.amount !== null
+                  ? ` - €${(preset.amount / 100).toFixed(2)} (fixed)`
+                  : ' - enter amount'}
+              </option>
+            ))}
+          </select>
 
           <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
           <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
