@@ -1,8 +1,10 @@
-﻿import { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 
 export default function LoginPage() {
   const { login } = useContext(AuthContext)
+  const { t } = useLocale()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -16,7 +18,7 @@ export default function LoginPage() {
     try {
       await login(email, password)
     } catch {
-      setError('Invalid email or password')
+      setError(t.invalidEmailOrPassword)
     }
 
     setLoading(false)
@@ -25,18 +27,18 @@ export default function LoginPage() {
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={handleLogin}>
-        <h1>Welcome Back</h1>
+        <h1>{t.welcomeBack}</h1>
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder={t.email}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t.password}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -44,9 +46,9 @@ export default function LoginPage() {
         {error ? <p className="error-text">{error}</p> : null}
 
         <button className="primary-button" type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? t.loggingIn : t.login}
         </button>
       </form>
     </div>
   )
-} // klassinen kirjautumissivu
+}

@@ -1,6 +1,7 @@
 import { useState, useContext } from "react"
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from "react-native";
 import { AuthContext } from "../context/AuthContext"
+import { useLocale } from "../context/LocaleContext"
 import { styles } from "../theme/Theme.js"
 import { colours } from "../theme/Colours.js"
 
@@ -8,6 +9,7 @@ const KeyboardWrapper = Platform.OS === 'web' ? View : KeyboardAvoidingView;
 
 const Login = () => {
   const { login, register } = useContext(AuthContext)
+  const { t } = useLocale()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -27,7 +29,7 @@ const Login = () => {
       await login(email, password);
     }
     catch (err) {
-      setError("Invalid email or password")
+      setError(t.invalidEmailOrPassword)
     }
 
     setLoading(false)
@@ -36,11 +38,11 @@ const Login = () => {
   const handleRegister = async () => {
     setError("")
     if (devPassword !== DEV_PASSWORD) { // for testing, remove to make public
-      setError("Invalid developer password")
+      setError(t.invalidDeveloperPassword)
       return
     }
     if (!email || !password) {
-      setError("Please enter email and password")
+      setError(t.pleaseEnterEmailAndPassword)
       setLoading(false)
       return
     }
@@ -51,13 +53,13 @@ const Login = () => {
     }
     catch (err) {
       if (err.code === "auth/email-already-in-use") {
-        setError("Email already in use")
+        setError(t.emailAlreadyInUse)
       } else if (err.code === "auth/weak-password") {
-        setError("Password must be at least 6 characters")
+        setError(t.passwordTooShort)
       } else if (err.code === "auth/invalid-email") {
-        setError("Invalid email address")
+        setError(t.invalidEmail)
       } else {
-        setError("Could not create account")
+        setError(t.couldNotCreateAccount)
       }
     }
 
@@ -76,10 +78,10 @@ const Login = () => {
     <KeyboardWrapper style={styles.loginContainer} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TouchableWithoutFeedback onPress={Platform.OS === 'web' ? () => {} : Keyboard.dismiss}>
         <View style={{ flex: 1, justifyContent: "center" }}>
-          <Text style={styles.title}>{isRegistering ? "Create Account" : "Welcome Back"}</Text>
+          <Text style={styles.title}>{isRegistering ? t.createAccount : t.welcomeBack}</Text>
 
           <TextInput
-            placeholder="Email"
+            placeholder={t.email}
             placeholderTextColor={colours.textSecondary}
             value={email}
             onChangeText={setEmail}
@@ -89,7 +91,7 @@ const Login = () => {
           />
 
           <TextInput
-            placeholder="Password"
+            placeholder={t.password}
             placeholderTextColor={colours.textSecondary}
             value={password}
             onChangeText={setPassword}
@@ -101,7 +103,7 @@ const Login = () => {
           {/* for testing, remove to make public */}
           {isRegistering && (
             <TextInput
-              placeholder="Developer password"
+              placeholder={t.developerPassword}
               placeholderTextColor={colours.textSecondary}
               value={devPassword}
               onChangeText={setDevPassword}
@@ -117,13 +119,13 @@ const Login = () => {
             {loading ? (
               <ActivityIndicator color={colours.whiteText} />
             ) : (
-              <Text style={styles.buttonText}>{isRegistering ? "Create Account" : "Login"}</Text>
+              <Text style={styles.buttonText}>{isRegistering ? t.createAccount : t.login}</Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity onPress={switchMode} style={{ marginTop: 16, alignItems: "center" }}>
             <Text style={{ color: colours.textSecondary }}>
-              {isRegistering ? "Already have an account? Login" : "Don't have an account? Create one"}
+              {isRegistering ? t.alreadyHaveAccount : t.dontHaveAccount}
             </Text>
           </TouchableOpacity>
         </View>

@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, Keyboard, ScrollView, P
 import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
+import { useLocale } from "../context/LocaleContext"
 import { styles } from '../theme/Theme.js'
 import { colours } from '../theme/Colours.js'
 
@@ -19,18 +20,9 @@ function parseMoneyInput(raw) {
   return Math.floor(value * 100)
 }
 
-const PRESETS = {
-  income: [
-    { name: 'Opintotuki', amount: 27900 },
-    { name: 'Opintotuen asumislisä', amount: null },
-  ],
-  expense: [
-    { name: 'Rent', amount: null },
-  ],
-}
-
 const StaticManagement = () => {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [rawAmount, setRawAmount] = useState("")
@@ -39,6 +31,16 @@ const StaticManagement = () => {
   const [showPresets, setShowPresets] = useState(false)
   const [staticIncomes, setStaticIncomes] = useState([])
   const [staticExpenses, setStaticExpenses] = useState([])
+
+  const presets = {
+    income: [
+      { name: t.presetOpintotuki, amount: 27900 },
+      { name: t.presetAsumislisa, amount: null },
+    ],
+    expense: [
+      { name: t.presetRent, amount: null },
+    ],
+  }
 
   const fetchStatic = async () => {
     try {
@@ -69,7 +71,7 @@ const StaticManagement = () => {
   const handleAdd = async () => {
     if (Platform.OS !== 'web') Keyboard.dismiss()
     if (!name || !amount) {
-      Alert.alert("Error", "Please enter name and amount")
+      Alert.alert(t.error, t.pleaseEnterNameAndAmount)
       return
     }
     try {
@@ -80,7 +82,7 @@ const StaticManagement = () => {
         amount,
         createdAt: serverTimestamp(),
       })
-      Alert.alert("Success", `Static ${isIncome ? "income" : "expense"} added!`)
+      Alert.alert(t.success, isIncome ? t.addStaticIncome + '!' : t.addStaticExpense + '!')
       setName("")
       setDescription("")
       setRawAmount("")
@@ -88,30 +90,30 @@ const StaticManagement = () => {
       fetchStatic()
     } catch (error) {
       console.log(error)
-      Alert.alert("Error", "Could not save")
+      Alert.alert(t.error, t.couldNotSave)
     }
   }
 
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity style={styles.devButton} onPress={() => setIsIncome(!isIncome)}>
-        <Text style={styles.buttonText}>Change to {isIncome ? "expense" : "income"}</Text>
+        <Text style={styles.buttonText}>{isIncome ? t.changeToExpense : t.changeToIncome}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Add Static {isIncome ? "Income" : "Expense"}</Text>
+      <Text style={styles.title}>{isIncome ? t.addStaticIncome : t.addStaticExpense}</Text>
 
       <TouchableOpacity
         style={[styles.devButton, { marginBottom: 8 }]}
         onPress={() => setShowPresets(!showPresets)}
       >
         <Text style={styles.buttonText}>
-          {showPresets ? "Hide presets ▲" : "Choose preset ▼"}
+          {showPresets ? t.hidePresets : t.showPresets}
         </Text>
       </TouchableOpacity>
 
       {showPresets && (
         <View style={{ marginBottom: 16 }}>
-          {(isIncome ? PRESETS.income : PRESETS.expense).map((preset) => (
+          {(isIncome ? presets.income : presets.expense).map((preset) => (
             <TouchableOpacity
               key={preset.name}
               onPress={() => applyPreset(preset)}
@@ -131,7 +133,7 @@ const StaticManagement = () => {
                 {preset.name}
               </Text>
               <Text style={{ color: colours.textSecondary, fontSize: 13 }}>
-                {preset.amount !== null ? `€${(preset.amount / 100).toFixed(2)} (fixed)` : 'enter amount'}
+                {preset.amount !== null ? `€${(preset.amount / 100).toFixed(2)} (${t.fixed})` : t.enterAmount}
               </Text>
             </TouchableOpacity>
           ))}
@@ -139,31 +141,31 @@ const StaticManagement = () => {
       )}
 
       <TextInput
-        placeholder={isIncome ? "Income name" : "Expense name"}
+        placeholder={isIncome ? t.incomeName : t.expenseName}
         value={name}
         onChangeText={setName}
         style={styles.input}
       />
       <TextInput
-        placeholder="Description"
+        placeholder={t.description}
         value={description}
         onChangeText={setDescription}
         style={styles.input}
         multiline
       />
       <TextInput
-        placeholder="Amount"
+        placeholder={t.amount}
         value={rawAmount}
         onChangeText={(text) => { setRawAmount(text); setAmount(parseMoneyInput(text)) }}
         style={styles.input}
         keyboardType="numeric"
       />
       <TouchableOpacity style={[styles.button, { marginBottom: 30 }]} onPress={handleAdd}>
-        <Text style={styles.buttonText}>Save static {isIncome ? "income" : "expense"}</Text>
+        <Text style={styles.buttonText}>{isIncome ? t.saveStaticIncome : t.saveStaticExpense}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Static Incomes</Text>
-      {staticIncomes.length === 0 && <Text style={styles.empty}>No static incomes yet</Text>}
+      <Text style={styles.title}>{t.staticIncomes}</Text>
+      {staticIncomes.length === 0 && <Text style={styles.empty}>{t.noStaticIncomesYet}</Text>}
       {staticIncomes.map(item => (
         <View key={item.id} style={[styles.card, { borderLeftWidth: 4, borderLeftColor: colours.income }]}>
           <View style={styles.cardTopRow}>
@@ -176,8 +178,8 @@ const StaticManagement = () => {
         </View>
       ))}
 
-      <Text style={[styles.title, { marginTop: 20 }]}>Static Expenses</Text>
-      {staticExpenses.length === 0 && <Text style={styles.empty}>No static expenses yet</Text>}
+      <Text style={[styles.title, { marginTop: 20 }]}>{t.staticExpensesTitle}</Text>
+      {staticExpenses.length === 0 && <Text style={styles.empty}>{t.noStaticExpensesYet}</Text>}
       {staticExpenses.map(item => (
         <View key={item.id} style={[styles.card, { borderLeftWidth: 4, borderLeftColor: colours.expense }]}>
           <View style={styles.cardTopRow}>

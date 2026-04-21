@@ -7,6 +7,7 @@ import { useFocusEffect } from "@react-navigation/native"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { PieChart } from "react-native-gifted-charts"
 import { AuthContext } from "../context/AuthContext"
+import { useLocale } from "../context/LocaleContext"
 import { collection, getDocs } from "firebase/firestore"
 import AddExpensePopup from './AddExpensePopup.js'
 
@@ -21,6 +22,7 @@ const EXPENSE_PALETTE = [
 
 const Etusivu = () => {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
 
   const [loading, setLoading] = useState(true)
   const [monthExpenses, setMonthExpenses] = useState([])
@@ -87,10 +89,9 @@ const Etusivu = () => {
     }
   }
 
-  // Build pie data inline so it reacts to selectedId changes
   const totalMonthExpense = monthExpenses.reduce((s, e) => s + e.amount, 0)
   const remaining = Math.max(0, totalIncome - totalStaticExpense - totalMonthExpense)
-  const balance = totalIncome - totalStaticExpense - totalMonthExpense //testi saanko saldon näkymään
+  const balance = totalIncome - totalStaticExpense - totalMonthExpense
   const pieData = []
   if (remaining > 0) {
     pieData.push({
@@ -180,7 +181,7 @@ const Etusivu = () => {
         data={monthExpenses}
         keyExtractor={item => item.id}
         renderItem={renderExpenseItem}
-        ListEmptyComponent={<Text style={styles.empty}>No expenses this month</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>{t.noExpensesThisMonth}</Text>}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingBottom: 160 }}

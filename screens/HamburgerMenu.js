@@ -1,7 +1,10 @@
 import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { styles } from '../theme/Theme.js'
+import { useLocale } from '../context/LocaleContext'
 
 const HamburgerMenu = ({ visible, onClose, navigation, logout }) => {
+  const { t } = useLocale()
+
   const handleSettings = () => {
     onClose()
     navigation.navigate('Settings')
@@ -29,15 +32,15 @@ const HamburgerMenu = ({ visible, onClose, navigation, logout }) => {
           <TouchableWithoutFeedback>
             <View style={styles.hamburgerContainer}>
               <TouchableOpacity style={styles.hamburgerItem} onPress={handleSettings}>
-                <Text style={styles.hamburgerItemText}>Settings</Text>
+                <Text style={styles.hamburgerItemText}>{t.settings}</Text>
               </TouchableOpacity>
               <View style={styles.hamburgerSeparator} />
               <TouchableOpacity style={styles.hamburgerItem} onPress={handleDeveloperThings}>
-                <Text style={styles.hamburgerItemText}>Developer things</Text>
+                <Text style={styles.hamburgerItemText}>{t.developerThings}</Text>
               </TouchableOpacity>
               <View style={styles.hamburgerSeparator} />
               <TouchableOpacity style={styles.hamburgerItem} onPress={handleLogout}>
-                <Text style={styles.hamburgerItemTextDanger}>Log out</Text>
+                <Text style={styles.hamburgerItemTextDanger}>{t.logOut}</Text>
               </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>

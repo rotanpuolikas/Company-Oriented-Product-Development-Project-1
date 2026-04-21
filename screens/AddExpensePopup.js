@@ -4,6 +4,7 @@ import { colours } from '../theme/Colours.js'
 import { collection, addDoc } from "firebase/firestore"
 import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
+import { useLocale } from "../context/LocaleContext"
 import { useState, useContext } from "react";
 
 const KeyboardWrapper = Platform.OS === 'web' ? View : KeyboardAvoidingView;
@@ -11,6 +12,7 @@ const DismissWrapper = Platform.OS === 'web' ? View : TouchableWithoutFeedback;
 
 export default function AddExpensePopup({selectedMonth, visible, onClose}) {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -18,7 +20,6 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
   const [rawAmount, setRawAmount] = useState("")
 
   function parseMoneyInput(raw) { // we save the inputted amounts x 100, ignoring every decimal after the second. javascript does funky stuff with floats sometimes so better to avoid using them
-    // tää on kaikki siis vaan koska eri maat eri desimaalierotin, joissaki , (suomi) ja joissaki . (usa)
     if (!raw) return 0;
     let cleaned = raw.trim().replace(/\s/g, '')
 
@@ -32,25 +33,24 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
     const value = parseFloat(cleaned)
     if (isNaN(value)) return 0
 
-    return Math.floor(value * 100) // jjaaa palautetaan satakertasena ettei tartte tallentaa floatteja/doubleja
-}
+    return Math.floor(value * 100)
+  }
 
   const handleAddExpense = async () => {
-    if (Platform.OS !== 'web') Keyboard.dismiss() // get that keyboard out of the way
+    if (Platform.OS !== 'web') Keyboard.dismiss()
 
-    if (!name || !amount) { // ei tule koskaan erroraamaan tähän
-      Alert.alert("Error", "Please enter name and amount")
+    if (!name || !amount) {
+      Alert.alert(t.error, t.pleaseEnterNameAndAmount)
       return
     }
 
-    if (amount < 0) { // eikä tähän, mutta pidetään failsafena täällä jos tapahtuu jotain kauheaa
-      Alert.alert("Error", "Expense must be higher than 0€")
+    if (amount < 0) {
+      Alert.alert(t.error, t.expenseMustBeHigher)
       return
     }
 
     const formatDay = selectedMonth.toLocaleDateString('en-US', {month: 'long'}) + selectedMonth.getFullYear()
 
-    // expense pathing, eli mihin firestoressa ne laitetaan
     try {
       const userRef = collection(
         db,
@@ -59,7 +59,6 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
         `${formatDay}_expenses`
       )
 
-      // jjaaa laitetaan ne sinne
       await addDoc(userRef, {
         name,
         description,
@@ -67,9 +66,8 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
         createdAt: new Date(),
       })
 
-      Alert.alert("Success", "Expense added!")
+      Alert.alert(t.success, t.expenseAdded)
 
-      // resetoidaan tekstikentät tyhjiksi et seuraavan menon lisäys ois helpompaa
       setName("")
       setDescription("")
       setAmount("")
@@ -77,7 +75,7 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
 
     } catch (error) {
       console.log(error)
-      Alert.alert("Error", "Could not save expense")
+      Alert.alert(t.error, t.couldNotSaveExpense)
     }
   }
 
@@ -91,16 +89,16 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
             keyboardVerticalOffset={20}
           >
             <View style={styles.popup}>
-              <Text style={styles.title}>Add a new expense</Text>
+              <Text style={styles.title}>{t.addNewExpense}</Text>
               <TextInput
-                placeholder="Expense name"
+                placeholder={t.expenseName}
                 value={name}
                 onChangeText={setName}
                 style={styles.input}
                 placeholderTextColor={colours.grayText}
               />
               <TextInput
-                placeholder="Description"
+                placeholder={t.description}
                 value={description}
                 onChangeText={setDescription}
                 style={styles.input}
@@ -108,7 +106,7 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
                 multiline
               />
               <TextInput
-                placeholder="Amount"
+                placeholder={t.amount}
                 value={rawAmount}
                 onChangeText={(text) => {
                   setRawAmount(text)
@@ -126,10 +124,10 @@ export default function AddExpensePopup({selectedMonth, visible, onClose}) {
                     onClose(true)
                   }
                   onClose(false)
-                }} // napin teksti ja action riippuu siitä mitkä kentät täytettyjä
+                }}
               >
                 <Text style={styles.buttonText}>
-                  {name !== "" && amount !== "" ? "Save Expense" : "Close"}
+                  {name !== "" && amount !== "" ? t.saveExpense : t.close}
                 </Text>
               </TouchableOpacity>
             </View>

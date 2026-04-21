@@ -2,12 +2,14 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import AddExpenseModal from '../components/AddExpenseModal'
 import SummaryCard from '../components/SummaryCard'
 import { AuthContext } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 import { fetchItemsByType, addItem } from '../data/mockData'
 import { addMonths, formatMonthYear } from '../utilities/dates'
 import { formatMoney } from '../utilities/money'
 
 export default function DashboardPage() {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [expenses, setExpenses] = useState([])
   const [staticIncomes, setStaticIncomes] = useState([])
@@ -57,39 +59,39 @@ export default function DashboardPage() {
     <section>
       <div className="page-header">
         <div>
-          <h2>Dashboard</h2>
+          <h2>{t.dashboard}</h2>
           <p className="muted-text">{formatMonthYear(currentMonth)}</p>
         </div>
 
         <div className="header-actions">
           <button className="secondary-button" onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}>
-            Previous
+            {t.previous}
           </button>
           <button
             className="secondary-button"
             onClick={() => !isCurrentMonth && setCurrentMonth(addMonths(currentMonth, 1))}
             disabled={isCurrentMonth}
           >
-            Next
+            {t.next}
           </button>
           <button className="primary-button" onClick={() => setShowModal(true)}>
-            Add Expense
+            {t.addExpense}
           </button>
         </div>
       </div>
 
       <div className="summary-grid">
-        <SummaryCard title="Total income" value={formatMoney(totalIncome)} tone="income" />
-        <SummaryCard title="Static expenses" value={formatMoney(totalStaticExpense)} tone="expense" />
-        <SummaryCard title="Monthly expenses" value={formatMoney(totalMonthExpense)} tone="expense" />
-        <SummaryCard title="Remaining" value={formatMoney(remaining)} tone="default" />
+        <SummaryCard title={t.totalIncome} value={formatMoney(totalIncome)} tone="income" />
+        <SummaryCard title={t.staticExpenses} value={formatMoney(totalStaticExpense)} tone="expense" />
+        <SummaryCard title={t.monthlyExpenses} value={formatMoney(totalMonthExpense)} tone="expense" />
+        <SummaryCard title={t.remaining} value={formatMoney(remaining)} tone="default" />
       </div>
 
       <div className="desktop-grid">
         <div className="panel large-panel">
-          <h3>Expenses</h3>
+          <h3>{t.expenses}</h3>
           {expenses.length === 0 ? (
-            <p className="muted-text">No expenses this month</p>
+            <p className="muted-text">{t.noExpensesThisMonth}</p>
           ) : (
             <div className="expense-list">
               {expenses.map((item) => {
@@ -113,7 +115,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="panel">
-          <h3>Chart placeholder</h3>
+          <h3>{t.chartPlaceholder}</h3>
           <p className="muted-text">
             vielä tyhjä chartista, toistaisekssi
           </p>
@@ -128,4 +130,4 @@ export default function DashboardPage() {
       />
     </section>
   )
-} // pääsivu, joka näyttää kuukausittaisen yhteenvedon tuloista ja menoista, lisätty placeholder chartille, joka on vielä tyhjä
+}

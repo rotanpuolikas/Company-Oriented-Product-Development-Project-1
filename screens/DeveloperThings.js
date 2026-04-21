@@ -4,6 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, Keyboard,
 import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase-auth"
 import { AuthContext } from "../context/AuthContext"
+import { useLocale } from "../context/LocaleContext"
 import { styles } from '../theme/Theme.js'
 import { colours } from '../theme/Colours.js'
 import Ionicons from "@expo/vector-icons/Ionicons"
@@ -23,6 +24,7 @@ function parseMoneyInput(raw) {
 
 const AddTab = () => {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState(0)
@@ -32,11 +34,10 @@ const AddTab = () => {
 
   const handleAdd = async () => {
     if (Platform.OS !== 'web') Keyboard.dismiss()
-    if (!name || !amount) { Alert.alert("Error", "Please enter name and amount"); return }
+    if (!name || !amount) { Alert.alert(t.error, t.pleaseEnterNameAndAmount); return }
 
     const today = new Date()
     const formatDay = today.toLocaleDateString('en-US', { month: 'long' }) + today.getFullYear()
-    // helpoin tapa tehä tää collection homma, ei tartte duplicateja sun muuta, katotaan vaan collectionName kuntoon
 
     let collectionName
     if (isIncome && isStatic)   collectionName = 'userStaticIncomes'
@@ -51,15 +52,16 @@ const AddTab = () => {
         amount,
         createdAt: serverTimestamp(),
       })
-      Alert.alert("Success", `${isStatic ? 'Static ' : ''}${isIncome ? 'income' : 'expense'} added!`)
+      const label = `${isStatic ? t.typeStatic + ' ' : ''}${isIncome ? t.typeIncome.toLowerCase() : t.typeExpense.toLowerCase()}`
+      Alert.alert(t.success, t.itemAdded(label))
       setName(""); setDescription(""); setRawAmount(""); setAmount(0)
     } catch (error) {
       console.log(error)
-      Alert.alert("Error", "Could not save")
+      Alert.alert(t.error, t.couldNotSave)
     }
   }
 
-  const typeLabel = `${isStatic ? 'Static ' : 'Monthly '}${isIncome ? 'Income' : 'Expense'}`
+  const typeLabel = `${isStatic ? t.typeStatic : t.typeMonthly} ${isIncome ? t.typeIncome : t.typeExpense}`
 
   return (
     <ScrollView>
@@ -69,7 +71,7 @@ const AddTab = () => {
           onPress={() => setIsIncome(!isIncome)}
         >
           <Text style={[styles.buttonText, { color: isIncome ? colours.card : colours.blackText }]}>
-            {isIncome ? 'Income' : 'Expense'}
+            {isIncome ? t.income : t.expense}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -77,31 +79,31 @@ const AddTab = () => {
           onPress={() => setIsStatic(!isStatic)}
         >
           <Text style={[styles.buttonText, { color: isStatic ? colours.card : colours.blackText }]}>
-            {isStatic ? 'Static' : 'Monthly'}
+            {isStatic ? t.staticLabel : t.monthly}
           </Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.title}>Add New {typeLabel}</Text>
+      <Text style={styles.title}>{t.addNew} {typeLabel}</Text>
       <TextInput
-        placeholder={`${typeLabel} name`}
+        placeholder={`${typeLabel} ${t.nameLabel}`}
         value={name} onChangeText={setName}
         style={styles.input}
       />
       <TextInput
-        placeholder="Description"
+        placeholder={t.description}
         value={description} onChangeText={setDescription}
         style={styles.input} multiline
       />
       <TextInput
-        placeholder="Amount"
+        placeholder={t.amount}
         value={rawAmount}
         onChangeText={(text) => { setRawAmount(text); setAmount(parseMoneyInput(text)) }}
         style={styles.input}
         keyboardType="numeric"
       />
       <TouchableOpacity style={styles.button} onPress={handleAdd}>
-        <Text style={styles.buttonText}>Save {typeLabel}</Text>
+        <Text style={styles.buttonText}>{t.save} {typeLabel}</Text>
       </TouchableOpacity>
     </ScrollView>
   )
@@ -112,6 +114,7 @@ const removeButtonSize = 20
 
 const ListTab = () => {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
   const [staticIncomes, setStaticIncomes] = useState([])
   const [staticExpenses, setStaticExpenses] = useState([])
   const [monthIncomes, setMonthIncomes] = useState([])
@@ -155,10 +158,10 @@ const ListTab = () => {
     try {
       await deleteDoc(doc(db, "users", user.uid, "userStaticIncomes", id))
       setStaticIncomes(prev => prev.filter(i => i.id !== id))
-      Alert.alert("Success", "Income source removed!")
+      Alert.alert(t.success, t.incomeSourceRemoved)
     } catch (err) {
       console.log(err)
-      Alert.alert("Error", "Could not remove income source")
+      Alert.alert(t.error, t.couldNotRemoveIncomeSource)
     }
   }
 
@@ -167,10 +170,10 @@ const ListTab = () => {
       const formatDay = currentMonth.toLocaleDateString('en-US', { month: 'long' }) + currentMonth.getFullYear()
       await deleteDoc(doc(db, "users", user.uid, `${formatDay}_expenses`, id))
       setMonthExpenses(prev => prev.filter(i => i.id !== id))
-      Alert.alert("Success", "Expense removed!")
+      Alert.alert(t.success, t.expenseRemoved)
     } catch (err) {
       console.log(err)
-      Alert.alert("Error", "Could not remove expense")
+      Alert.alert(t.error, t.couldNotRemoveExpense)
     }
   }
 
@@ -218,7 +221,7 @@ const ListTab = () => {
           onPress={() => setIEState(!ieState)}
         >
           <Text style={[styles.buttonText, { color: ieState ? colours.card : colours.blackText }]}>
-            {ieState ? 'Incomes' : 'Expenses'}
+            {ieState ? t.incomes : t.expenses}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -226,7 +229,7 @@ const ListTab = () => {
           onPress={() => setSmState(!smState)}
         >
           <Text style={[styles.buttonText, { color: smState ? colours.card : colours.blackText }]}>
-            {smState ? 'Static' : 'Monthly'}
+            {smState ? t.staticLabel : t.monthly}
           </Text>
         </TouchableOpacity>
       </View>
@@ -236,7 +239,12 @@ const ListTab = () => {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={styles.empty}>No {smState ? "static" : "monthly"} {ieState ? "incomes" : "expenses"} yet.</Text>
+          <Text style={styles.empty}>
+            {t.noItemsYet(
+              smState ? t.typeStatic.toLowerCase() : t.monthly.toLowerCase(),
+              ieState ? t.incomes.toLowerCase() : t.expenses.toLowerCase()
+            )}
+          </Text>
         }
       />
       <View style={[styles.arrowsFrontpage, { marginTop: 12 }]}>
@@ -255,6 +263,7 @@ const ListTab = () => {
 }
 
 const DeveloperThings = () => {
+  const { t } = useLocale()
   const [tab, setTab] = useState('add')
 
   return (
@@ -264,13 +273,13 @@ const DeveloperThings = () => {
           style={[styles.button, { flex: 1, backgroundColor: tab === 'add' ? colours.secondary : colours.button }]}
           onPress={() => setTab('add')}
         >
-          <Text style={[styles.buttonText, { color: tab === 'add' ? colours.card : colours.blackText }]}>Add</Text>
+          <Text style={[styles.buttonText, { color: tab === 'add' ? colours.card : colours.blackText }]}>{t.add}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, { flex: 1, backgroundColor: tab === 'list' ? colours.secondary : colours.button }]}
           onPress={() => setTab('list')}
         >
-          <Text style={[styles.buttonText, { color: tab === 'list' ? colours.card : colours.blackText }]}>List</Text>
+          <Text style={[styles.buttonText, { color: tab === 'list' ? colours.card : colours.blackText }]}>{t.list}</Text>
         </TouchableOpacity>
       </View>
       {tab === 'add' ? <AddTab /> : <ListTab />}

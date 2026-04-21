@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 import { fetchItemsByType, addItem, deleteItem } from '../data/mockData'
 import { formatMoney, parseMoneyInput } from '../utilities/money'
 
 export default function DeveloperPage() {
   const { user } = useContext(AuthContext)
+  const { t } = useLocale()
   const [tab, setTab] = useState('add')
   const [isIncome, setIsIncome] = useState(true)
   const [isStatic, setIsStatic] = useState(false)
@@ -41,79 +43,51 @@ export default function DeveloperPage() {
     if (!name || !amount || !user) return
 
     const type = isIncome
-      ? isStatic
-        ? 'staticIncome'
-        : 'monthlyIncome'
-      : isStatic
-        ? 'staticExpense'
-        : 'monthlyExpense'
+      ? isStatic ? 'staticIncome' : 'monthlyIncome'
+      : isStatic ? 'staticExpense' : 'monthlyExpense'
 
-    const newItem = {
-      name,
-      description,
-      amount,
-      type,
-    }
-
+    const newItem = { name, description, amount, type }
     const savedItem = await addItem(user.uid, newItem)
     const key = isIncome
-      ? isStatic
-        ? 'staticIncomes'
-        : 'monthIncomes'
-      : isStatic
-        ? 'staticExpenses'
-        : 'monthExpenses'
+      ? isStatic ? 'staticIncomes' : 'monthIncomes'
+      : isStatic ? 'staticExpenses' : 'monthExpenses'
 
-    setData((prev) => ({
-      ...prev,
-      [key]: [savedItem, ...prev[key]],
-    }))
-
+    setData((prev) => ({ ...prev, [key]: [savedItem, ...prev[key]] }))
     setName('')
     setDescription('')
     setRawAmount('')
   }
 
   const currentList = listType.isIncome
-    ? listType.isStatic
-      ? data.staticIncomes
-      : data.monthIncomes
-    : listType.isStatic
-      ? data.staticExpenses
-      : data.monthExpenses
+    ? listType.isStatic ? data.staticIncomes : data.monthIncomes
+    : listType.isStatic ? data.staticExpenses : data.monthExpenses
 
   const removeItem = async (id) => {
     if (!user) return
     await deleteItem(user.uid, id)
 
     const key = listType.isIncome
-      ? listType.isStatic
-        ? 'staticIncomes'
-        : 'monthIncomes'
-      : listType.isStatic
-        ? 'staticExpenses'
-        : 'monthExpenses'
+      ? listType.isStatic ? 'staticIncomes' : 'monthIncomes'
+      : listType.isStatic ? 'staticExpenses' : 'monthExpenses'
 
-    setData((prev) => ({
-      ...prev,
-      [key]: prev[key].filter((item) => item.id !== id),
-    }))
+    setData((prev) => ({ ...prev, [key]: prev[key].filter((item) => item.id !== id) }))
   }
-   return (
+
+  return (
     <section>
       <div className="page-header">
         <div>
-          <h2>Developer</h2>
-          <p className="muted-text">Web version of your add/list tools.</p>
+          <h2>{t.developer}</h2>
+          <p className="muted-text">{t.developerDesc}</p>
         </div>
       </div>
 
       <div className="toggle-row">
         <button className={tab === 'add' ? 'primary-button' : 'secondary-button'} onClick={() => setTab('add')}>
-          Add
+          {t.add}
         </button>
         <button className={tab === 'list' ? 'primary-button' : 'secondary-button'} onClick={() => setTab('list')}>
-          List
+          {t.list}
         </button>
       </div>
 
@@ -121,31 +95,31 @@ export default function DeveloperPage() {
         <div className="panel">
           <div className="toggle-row">
             <button className="secondary-button" onClick={() => setIsIncome(!isIncome)}>
-              {isIncome ? 'Income' : 'Expense'}
+              {isIncome ? t.income : t.expense}
             </button>
             <button className="secondary-button" onClick={() => setIsStatic(!isStatic)}>
-              {isStatic ? 'Static' : 'Monthly'}
+              {isStatic ? t.staticLabel : t.monthly}
             </button>
           </div>
 
-          <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-          <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-          <input placeholder="Amount" value={rawAmount} onChange={(e) => setRawAmount(e.target.value)} />
-          <button className="primary-button" onClick={handleAdd}>Save</button>
+          <input placeholder={t.name} value={name} onChange={(e) => setName(e.target.value)} />
+          <textarea placeholder={t.description} value={description} onChange={(e) => setDescription(e.target.value)} />
+          <input placeholder={t.amount} value={rawAmount} onChange={(e) => setRawAmount(e.target.value)} />
+          <button className="primary-button" onClick={handleAdd}>{t.save}</button>
         </div>
       ) : (
         <div className="panel">
           <div className="toggle-row">
             <button className="secondary-button" onClick={() => setListType((prev) => ({ ...prev, isIncome: !prev.isIncome }))}>
-              {listType.isIncome ? 'Incomes' : 'Expenses'}
+              {listType.isIncome ? t.incomes : t.expenses}
             </button>
             <button className="secondary-button" onClick={() => setListType((prev) => ({ ...prev, isStatic: !prev.isStatic }))}>
-              {listType.isStatic ? 'Static' : 'Monthly'}
+              {listType.isStatic ? t.staticLabel : t.monthly}
             </button>
           </div>
           <div className="simple-list">
             {currentList.length === 0 ? (
-              <p className="muted-text">Nothing here yet.</p>
+              <p className="muted-text">{t.nothingHereYet}</p>
             ) : (
               currentList.map((item) => (
                 <div key={item.id} className="list-card">
@@ -165,4 +139,4 @@ export default function DeveloperPage() {
       )}
     </section>
   )
-} // kehityssivu, jossa voi lisätä ja listata tuloja ja menoja ilman rajoituksia, tarkoitettu vain testailuun
+}
