@@ -1,48 +1,52 @@
-﻿import {
+import {
   collection,
-  query,
-  where,
   getDocs,
   addDoc,
   deleteDoc,
   doc,
+  serverTimestamp,
 } from 'firebase/firestore'
 import { db } from '../firebase-auth'
 
-const userBudgetCollection = (uid) => collection(db, 'users', uid, 'budgetItems') // no such thing as budgetItems
-
-const toItem = (docSnap) => ({ id: docSnap.id, ...docSnap.data() })
-
-export async function fetchItemsByType(uid, type) {
-  if (!uid) return []
-  const q = query(userBudgetCollection(uid), where('type', '==', type))
-  const snapshot = await getDocs(q)
-  return snapshot.docs.map(toItem)
+function formatMonth(date = new Date()) {
+  return date.toLocaleDateString('en-US', { month: 'long' }) + date.getFullYear()
 }
 
-export async function addItem(uid, item) {
-  if (!uid) throw new Error('Missing user uid')
-  const docRef = await addDoc(userBudgetCollection(uid), {
-    name: item.name,
-    description: item.description || '',
-    amount: item.amount,
-    type: item.type,
-    createdAt: new Date().toISOString(),
-  })
-
-  return {
-    id: docRef.id,
-    name: item.name,
-    description: item.description || '',
-    amount: item.amount,
-    type: item.type,
-    createdAt: new Date().toISOString(),
+function getCollectionName(type, month) {
+  const fmt = formatMonth(month)
+  switch (type) {
+    case 'staticIncome':   return 'userStaticIncomes'
+    case 'staticExpense':  return 'userStaticExpenses'
+    case 'monthlyIncome':  return `${fmt}_incomes`
+    case 'monthlyExpense': return `${fmt}_expenses`
+    default: throw new Error(`Unknown item type: ${type}`)
   }
 }
 
-export async function deleteItem(uid, itemId) {
+const userCol = (uid, name) => collection(db, 'users', uid, name)
+
+export async function fetchItemsByType(uid, type, month) {
+  if (!uid) return []
+  const name = getCollectionName(type, month)
+  const snapshot = await getDocs(userCol(uid, name))
+  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+}
+
+export async function addItem(uid, item, month) {
+  if (!uid) throw new Error('Missing user uid')
+  const name = getCollectionName(item.type, month)
+  const payload = {
+    name: item.name,
+    description: item.description || '',
+    amount: item.amount,
+    createdAt: serverTimestamp(),
+  }
+  const docRef = await addDoc(userCol(uid, name), payload)
+  return { id: docRef.id, ...payload, createdAt: new Date().toISOString() }
+}
+
+export async function deleteItem(uid, itemId, type, month) {
   if (!uid || !itemId) throw new Error('Missing uid or item id')
-  return deleteDoc(doc(db, 'users', uid, 'budgetItems', itemId))
-} /// mikä on budgetItems? tämmöstä collectionia ei ole olemassa, collectionit on tällaiset:
-// MonthYear_expenses (April2026_expenses for example), userStaticIncomes, userStaticExpenses
-// mockData.js - simuloitu tietolähde, joka käyttää Firebase Firestorea tietojen tallentamiseen ja hakemiseen, halusin itkeä tämän kanssa
+  const name = getCollectionName(type, month)
+  return deleteDoc(doc(db, 'users', uid, name, itemId))
+}
