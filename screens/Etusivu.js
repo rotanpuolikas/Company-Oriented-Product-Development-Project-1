@@ -189,17 +189,23 @@ const Etusivu = () => {
 
       <Animated.View style={[styles.floatingControls, { transform: [{ translateY: controlsTranslateY }] }]}>
         <TouchableOpacity style={styles.buttonFrontpage} onPress={() => setShowPopup(true)}>
-          <Ionicons name="add-outline" size={30} color={'#000'} />
+          <Ionicons name="add" size={28} color={'#fff'} />
         </TouchableOpacity>
         <View style={styles.arrowsFrontpage}>
-          <TouchableOpacity onPress={() => setCurrentMonth(addMonths(currentMonth, -1))}>
-            <Ionicons name='arrow-back-outline' size={30} color={'#000'} />
+          <TouchableOpacity
+           style={styles.arrowButton}
+           onPress={() => setCurrentMonth(addMonths(currentMonth, -1))}
+          >
+            <Ionicons name='arrow-back-outline' size={22} color={'#000'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => !isCurrentMonth && setCurrentMonth(addMonths(currentMonth, 1))}
             disabled={isCurrentMonth}
           >
-            <Ionicons name='arrow-forward-outline' size={30} color={isCurrentMonth ? '#ccc' : '#000'} />
+            <Ionicons 
+              name='arrow-forward-outline'
+              size={22}
+              color={isCurrentMonth ? '#ccc' : '#000'} />
           </TouchableOpacity>
         </View>
       </Animated.View>
