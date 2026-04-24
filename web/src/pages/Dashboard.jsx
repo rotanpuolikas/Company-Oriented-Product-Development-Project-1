@@ -64,21 +64,28 @@ export default function DashboardPage() {
         </div>
 
         <div className="header-actions">
-          <button className="secondary-button" onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}>
-            {t.previous}
-          </button>
-          <button
-            className="secondary-button"
-            onClick={() => !isCurrentMonth && setCurrentMonth(addMonths(currentMonth, 1))}
-            disabled={isCurrentMonth}
+      <button
+          className="secondary-button"
+          onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}
           >
-            {t.next}
+          Previous
           </button>
-          <button className="primary-button" onClick={() => setShowModal(true)}>
-            {t.addExpense}
-          </button>
-        </div>
-      </div>
+
+    <button
+    className="secondary-button"
+    onClick={() => !isCurrentMonth && setCurrentMonth(addMonths(currentMonth, 1))}
+    disabled={isCurrentMonth}
+    >
+    Next
+  </button>
+
+  <button
+    className="primary-button"
+    onClick={() => setShowModal(true)}
+  >
+    Add Expense
+  </button>
+</div>
 
       <div className="summary-grid">
         <SummaryCard title={t.totalIncome} value={formatMoney(totalIncome)} tone="income" />
@@ -128,6 +135,7 @@ export default function DashboardPage() {
         onClose={() => setShowModal(false)}
         onSave={handleSaveExpense}
       />
+      </div>
     </section>
   )
 }
