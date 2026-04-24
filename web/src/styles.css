@@ -187,3 +187,24 @@ textarea::placeholder {
   width: 100%;
   min-height: 52px;
 }
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 520px;
+}
+
+.login-logo {
+  width: 400px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 14px;
+}
