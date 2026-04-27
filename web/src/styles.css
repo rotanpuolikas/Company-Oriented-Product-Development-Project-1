@@ -20,11 +20,21 @@ body {
   font-family: Inter, Arial, sans-serif;
 }
 
+/* APP LAYOUT */
+
 .app-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
 }
+
+.page-content {
+  padding: 24px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* SIDEBAR */
 
 .sidebar {
   background: var(--sidebar);
@@ -66,9 +76,7 @@ body {
   font-weight: 800;
 }
 
-.page-content {
-  padding: 32px;
-}
+/* BUTTONS */
 
 button,
 .primary-button,
@@ -121,6 +129,54 @@ button:disabled,
   background: #111;
   color: #ffffff;
 }
+
+
+.desktop-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.large-panel {
+  max-width: 380px;
+  width: 100%;
+}
+
+.large-panel h3 {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.summary-grid {
+  margin-bottom: 12px;
+}
+
+.expense-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.expense-item {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 14px;
+  background: #f3f3f3;
+  border: none;
+}
+
+.chart-box {
+  flex: 1;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+}
+
+/* INPUTS */
+
 input,
 textarea,
 select {
@@ -155,6 +211,8 @@ textarea::placeholder {
   color: #8a8a8a;
 }
 
+/* FORMS */
+
 .form-panel {
   width: 100%;
   max-width: 560px;
@@ -188,6 +246,8 @@ textarea::placeholder {
   min-height: 52px;
 }
 
+/* LOGIN */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -207,4 +267,64 @@ textarea::placeholder {
   display: block;
   margin: 0 auto 10px;
   border-radius: 14px;
+}
+
+/* MODAL */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 999;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-card h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.modal-card .form-row {
+  width: 100%;
+  max-width: 460px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.modal-card input,
+.modal-card textarea {
+  width: 100%;
+  max-width: 460px;
+}
+
+.sidebar {
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.logout-button {
+  margin-top: auto;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
