@@ -1,23 +1,16 @@
-# web + mobile app test
+# MassiMappi
 
-## ALUKSI
+## perusinfot
 
-aina `git pull` ja `npm i` ennen ku mitään muutoksia tekemään
+toteutettu käyttäen Expoa, `expo@54.0.33` to be exact.
 
-käynnistä appi: `npx expo start --web`, näyttää kaks erroria versioista, mutta jos nuo packaget päivittää noihin 'oikeisiin' versioihin, tää lopettaa toimimisen, joten ne voi ignoraa.
-
-## infoa
-
-toteutettu käyttäen Expoa, `expo@54.0.33` to be exact, koska iOS :))
-
-as it turns out expolla voi tehä molemmat, mobiili- ja webapin.
-
-mikä pitää ottaa huomioon on, että kaikki packaget ja muut mitkä alkaa react-native, pitää yleensä portata webversioksi jotenki kans, ei toimi webissä natiivisti, mutta se onnistuu semi-helposti käyttämällä sitä ihanaa kysymysmerkkioperaattoria, kuten vaikkapa tuolla `screens/Login.js` -tiedostossa, jossa ei browserissa saa dismissaa keyboardia, eli se piti tehdä näin: `onPress={Platform.OS === 'web' ? () => {} : Keyboard.dismiss}` (kysymysmerkin jälkeen ensimmäinen kohta (tyhjä funktio) pyörähtää, jos `Platform.OS` on `true`, ja jos ei ole, `Keyboard.dismiss`:llä näppis pois tieltä)
-
+web-versio löytyy subfolderista `web/`, siellä on oma readme
 
 ## firebase setup
 
-tee project roottiin tiedosto nimeltään `firebaseConfig.js`, jonka sisältö on luokkaa:
+ota firebasessa käyttöön email autentikaatio, tämä mahdollistaa sisäänkirjautumisen ja tilien luonnin firebasen kautta.
+
+tee projektin alimmalle tasolle tiedosto nimeltään `firebaseConfig.js`, jonka tulee sisältää tämä:
 
 
 ```
@@ -31,7 +24,7 @@ export const firebaseConfig = {
 }
 ```
 
-jja sitten itse firebasessa firestoren sääntöjen tulisi sisältää ainakin:
+firebasen sääntöjen tulisi sisältää tämä:
 
 ```
     match /users/{userId}/{yearMonth_expenses}/{expenseId} {
@@ -78,9 +71,13 @@ Seuraavat kaksi asiaa on vain testaukseen ja devaukseen tarkotettuja sivuja, ei 
 
 `DevelopDBRead.js` on sivu, jossa voi selata ja poistaa käyttäjän tietokannassa olevia tietoja.
 
+### languages
+
+Tämä kansio sisältää lokalisaatiotiedostot, sinne voi lisätä omia lokalisaatioita, tai vaihtaa olemassaolevia käännöksiä.
+
 ### context
 
-`AuthContext.js` hoitaa autentikoinnin, älä koske. Tämä toimii. Jos päätetään käyttää laitteen paikallista storagea, tai lisätä käyttäjälle loginissa tärkeitä parametrejä niin sitten ne lisätään tänne. Muutoin tämä on fine-as-is.
+`AuthContext.js` hoitaa Firebasen käyttäjäautentikoinnin, älä koske.
 
 ### theme
 
@@ -90,4 +87,4 @@ Seuraavat kaksi asiaa on vain testaukseen ja devaukseen tarkotettuja sivuja, ei 
 
 ### assets
 
-Tämä kansio sisältää kaiken median applikaatiolle. Tänne appiksen logo sun muut sellaiset graffat kunhan niitä tullee tehdyksi.
+Tämä kansio sisältää kaiken median applikaatiolle. Tänne appiksen logo sun muut sellaiset graffat.
